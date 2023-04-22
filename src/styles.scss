@@ -1,0 +1,31 @@
+@import './variables';
+@import './mixins';
+@import './reset';
+
+.title {
+  @include font-size-title;
+
+  padding: 10px 0px;
+  font-family: $font-family-title;
+  text-align: center;
+}
+
+.section {
+  padding: 20px 0;
+
+  &_highlight {
+    background-color: $color-background-highlight;
+  }
+}
+
+.article {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.paragraph {
+  @include font-size-primary;
+
+  padding: 5px 30px;
+  text-align: center;
+}
