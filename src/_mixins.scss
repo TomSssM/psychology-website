@@ -7,3 +7,16 @@
   font-size: 40px;
   line-height: 50px;
 }
+
+@mixin font-size-subtitle {
+  font-size: 32px;
+  line-height: 40px;
+}
+
+@mixin transition-primary($property: 'all') {
+  transition: {
+    property: #{$property};
+    duration: $transition-duration-primary;
+    timing-function: $transition-timing-function-primary;
+  }
+}

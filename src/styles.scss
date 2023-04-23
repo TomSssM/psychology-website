@@ -2,12 +2,62 @@
 @import './mixins';
 @import './reset';
 
+html {
+  font: {
+    family: $font-family-primary;
+    weight: $font-weight-primary;
+  };
+  color: $color-text-primary;
+  background-color: $color-background-primary;
+}
+
+.body {
+  position: relative;
+}
+
 .title {
   @include font-size-title;
 
   padding: 10px 0px;
   font-family: $font-family-title;
   text-align: center;
+}
+
+.subtitle {
+  @include font-size-subtitle;
+
+  font: {
+    family: $font-family-title;
+    weight: $font-weight-primary;
+  };
+  padding: 8px 0px;
+  text-align: center;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  background-color: $color-background-primary;
+  box-shadow: $box-shadow-background-primary;
+
+  &__title {
+    margin-right: 20px;
+  }
+
+  &__contact-button {
+    @include transition-primary(#{opacity});
+
+    opacity: 1;
+
+    &_hidden {
+      pointer-events: none;
+      opacity: 0;
+    }
+  }
 }
 
 .section {
@@ -28,4 +78,89 @@
 
   padding: 5px 30px;
   text-align: center;
+}
+
+.buttons-container {
+  margin: 10px 0px;
+  padding: 0px 10px;
+  text-align: center;
+  max-width: 500px;
+  margin: auto;
+
+  > * {
+    margin: 8px auto;
+  }
+}
+
+.button {
+  @include font-size-primary;
+  @include transition-primary(#{background-color, box-shadow});
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 32px;
+  background-color: $color-background-action;
+  font-weight: $font-weight-action;
+  box-shadow: none;
+  border-radius: $border-radius-s;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-background-action-hover;
+    box-shadow: $box-shadow-background-action;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: none;
+    background-color: $color-background-action-focus;
+  }
+
+  &:active {
+    box-shadow: none;
+    background-color: $color-background-action-active;
+  }
+
+  &_fullwidth {
+    display: flex;
+    width: 100%;
+  }
+
+  &_with {
+    &_icon-left {
+      padding-left: 20px;
+      padding-right: 20px + 28px;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    align-items: center;
+  }
+
+  &__icon {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.icon {
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: center center;
+
+  &_type {
+    &_instagram {
+      background-image: url("../assets/instagram.svg");
+    }
+
+    &_telegram {
+      background-image: url("../assets/telegram.svg");
+    }
+
+    &_whatsapp {
+      background-image: url("../assets/whatsapp.svg");
+    }
+  }
 }

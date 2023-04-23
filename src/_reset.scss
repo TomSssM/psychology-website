@@ -1,7 +1,5 @@
-html {
-  font-family: $font-family-primary;
-  color: $color-text-primary;
-  background-color: $color-background-primary;
+* {
+  -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
@@ -16,4 +14,18 @@ h1, h2, h3, h4, h5, h6 {
 
 p {
   margin: 0;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  cursor: inherit;
 }

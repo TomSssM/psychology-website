@@ -12,12 +12,26 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&display=swap" />
   <link rel="stylesheet" href="./build/styles.css" />
 </head>
-<body>
+<body class="body">
   <header class="header">
-    <h1 class="title">Параграфы</h1>
+    <h1 class="title header__title">ekaterinakortasova.moscow</h1>
+    <span id="contact-button" class="header__contact-button">
+      <button role="button" class="button">Записаться</button>
+    </span>
   </header>
 
   <main class="main">
+    <section class="section section_highlight">
+      <article class="article">
+        <h2 class="subtitle">Параграфы</h2>
+        <p class="paragraph">
+          Принимая во внимание, что пренебрежение и презрение к правам человека.
+          Никто не должен содержаться в рабстве или в подневольном состоянии; рабство и работорговля
+          запрещаются во всех их видах.
+        </p>
+      </article>
+    </section>
+
     <section class="section">
       <article class="article">
         <p class="paragraph">
@@ -28,14 +42,33 @@
       </article>
     </section>
 
-    <section class="section section_highlight">
+    <section id="contact-section" class="section section_highlight">
+      <h2 class="subtitle">Кнопки</h2>
       <article class="article">
         <p class="paragraph">
           Принимая во внимание, что пренебрежение и презрение к правам человека.
-          Никто не должен содержаться в рабстве или в подневольном состоянии; рабство и работорговля
-          запрещаются во всех их видах.
         </p>
       </article>
+      <div class="buttons-container">
+        <button role="link" class="button button_fullwidth button_with_icon-left">
+          <i class="button__icon icon icon_type_telegram"></i>
+          <span class="button__content">
+            Записаться
+          </span>
+        </button>
+        <button role="link" class="button button_fullwidth button_with_icon-left">
+          <i class="button__icon icon icon_type_instagram"></i>
+          <span class="button__content">
+            Записаться
+          </span>
+        </button>
+        <button role="link" class="button button_fullwidth button_with_icon-left">
+          <i class="button__icon icon icon_type_whatsapp"></i>
+          <span class="button__content">
+            Записаться
+          </span>
+        </button>
+      </div>
     </section>
   </main>
 </body>
