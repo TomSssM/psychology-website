@@ -6,17 +6,17 @@ $font-weight-primary: 200;
 $font-weight-action: 400;
 
 $color-background-primary: #fffdf7;
-$color-background-action: #bddbff;
-$color-background-action-focus: #e1eeff;
-$color-background-action-active: #d8e6f8;
-$color-background-action-hover: #a4cafb;
+$color-background-action: #e0c8bb;
+$color-background-action-hover: #ecdbd3;
+$color-background-action-focus: #ebded7;
+$color-background-action-active: #ceb5a9;
 $color-background-highlight: #f1ece0;
 $color-text-primary: #2d2d2c;
 
 $transition-duration-primary: .2s;
 $transition-timing-function-primary: ease-out;
 
+$border-radius-xs: 2px;
 $border-radius-s: 6px;
 
-$box-shadow-background-primary: 0px 4px 20px 20px #fffdf7;
-$box-shadow-background-action: 0px 0px 2px 1px #86bcffd4;
+$box-shadow-background-primary: 0px 4px 20px 20px $color-background-primary;

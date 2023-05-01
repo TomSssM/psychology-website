@@ -95,7 +95,7 @@ html {
 
 .button {
   @include font-size-primary;
-  @include transition-primary(#{background-color, box-shadow});
+  @include transition-primary(#{background-color});
 
   display: inline-flex;
   justify-content: center;
@@ -103,23 +103,19 @@ html {
   padding: 16px 32px;
   background-color: $color-background-action;
   font-weight: $font-weight-action;
-  box-shadow: none;
   border-radius: $border-radius-s;
   cursor: pointer;
 
-  &:hover {
-    background-color: $color-background-action-hover;
-    box-shadow: $box-shadow-background-action;
-  }
-
   &:focus-visible {
     outline: none;
-    box-shadow: none;
     background-color: $color-background-action-focus;
   }
 
+  &:hover {
+    background-color: $color-background-action-hover;
+  }
+
   &:active {
-    box-shadow: none;
     background-color: $color-background-action-active;
   }
 
@@ -170,7 +166,8 @@ html {
   $item-size: 40px;
 
   list-style: none;
-  padding: 0 20px;
+  padding: 20px;
+  padding-top: 0;
 
   &_with-groups {
     display: flex;
@@ -205,5 +202,42 @@ html {
       weight: $font-weight-action;
       size: $item-size;
     };
+  }
+}
+
+.gallery {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  justify-content: center;
+
+  &__image {
+    display: inline-block;
+    width: 250px;
+    height: 350px;
+    margin: 0 40px;
+    margin-top: 40px;
+    border-radius: $border-radius-s;
+    background: {
+      repeat: no-repeat;
+      position: center;
+      size: cover;
+    }
+
+    &:nth-child(odd) {
+      margin-top: 20px;
+    }
+
+    &:nth-child(1) {
+      background-image: url("../assets/gallery-img-1.jpg");
+    }
+
+    &:nth-child(2) {
+      background-image: url("../assets/gallery-img-2.jpg");
+    }
+
+    &:nth-child(3) {
+      background-image: url("../assets/gallery-img-3.jpg");
+    }
   }
 }
