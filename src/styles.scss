@@ -37,6 +37,7 @@ html {
 .header {
   position: sticky;
   top: 0;
+  z-index: 1;
   display: flex;
   flex-flow: row wrap;
   align-items: center;
@@ -162,5 +163,47 @@ html {
     &_whatsapp {
       background-image: url("../assets/whatsapp.svg");
     }
+  }
+}
+
+.list {
+  $item-size: 40px;
+
+  list-style: none;
+  padding: 0 20px;
+
+  &_with-groups {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  &__group {
+    margin: 0 20px;
+  }
+
+  &__item {
+    position: relative;
+    padding-left: $item-size;
+    width: 300px;
+    margin: auto;
+    margin-top: 40px;
+  }
+
+  &__marker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: $item-size;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    font: {
+      family: $font-family-marker;
+      weight: $font-weight-action;
+      size: $item-size;
+    };
   }
 }
