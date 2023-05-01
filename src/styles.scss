@@ -1,3 +1,4 @@
+@use 'sass:math';
 @import './variables';
 @import './mixins';
 @import './reset';
@@ -239,5 +240,102 @@ html {
     &:nth-child(3) {
       background-image: url("../assets/gallery-img-3.jpg");
     }
+  }
+}
+
+.accordion {
+  $accordion-expand-button-size: 15px;
+  $accordion-expand-button-offset: 10px;
+  $accordion-expand-button-bar-width: 9px;
+  $accordion-expand-button-bar-height: 1px;
+
+  max-width: 550px;
+  margin: auto;
+
+  &__item {
+    display: block;
+    padding: 15px;
+  }
+
+  &__title {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    cursor: pointer;
+  }
+
+  &__expand-button {
+    @include transition-primary(#{transform});
+
+    display: inline-block;
+    position: relative;
+    width: $accordion-expand-button-size;
+    height: $accordion-expand-button-size;
+    margin-right: $accordion-expand-button-offset;
+    border-radius: 50%;
+    background-color: $color-background-action;
+    transform: rotate(0);
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      opacity: 1;
+      background-color: $color-background-primary;
+    }
+
+    &::before {
+      top: math.div($accordion-expand-button-size - $accordion-expand-button-bar-height, 2);
+      left: math.div($accordion-expand-button-size - $accordion-expand-button-bar-width, 2);
+      width: $accordion-expand-button-bar-width;
+      height: $accordion-expand-button-bar-height;
+    }
+
+    &::after {
+      top: math.div($accordion-expand-button-size - $accordion-expand-button-bar-width, 2);
+      left: math.div($accordion-expand-button-size - $accordion-expand-button-bar-height, 2);
+      width: $accordion-expand-button-bar-height;
+      height: $accordion-expand-button-bar-width;
+    }
+  }
+
+  &__title-text {
+    flex: 1;
+  }
+
+  &__content {
+    @include font-size-secondary;
+
+    transform-origin: top center;
+    visibility: hidden;
+    pointer-events: none;
+    height: 0;
+    padding: {
+      top: 10px;
+      right: 5px;
+      bottom: 5px;
+      left: $accordion-expand-button-size + $accordion-expand-button-offset;
+    };
+    opacity: 0;
+    transform: scaleY(0);
+  }
+
+  &__item_expanded &__expand-button {
+    transform: rotate(90deg);
+
+    &::before {
+      opacity: 0;
+    }
+  }
+
+  &__item_expanded &__content {
+    @include transition-primary(#{opacity, transform});
+
+    visibility: visible;
+    pointer-events: all;
+    height: 100%;
+    opacity: 1;
+    transform: scaleY(1);
   }
 }
