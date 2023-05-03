@@ -25,3 +25,11 @@
     timing-function: $transition-timing-function-primary;
   }
 }
+
+@mixin transition-secondary($property: 'all') {
+  transition: {
+    property: #{$property};
+    duration: $transition-duration-secondary;
+    timing-function: $transition-timing-function-secondary;
+  }
+}

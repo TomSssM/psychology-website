@@ -19,9 +19,13 @@ html {
 .title {
   @include font-size-title;
 
+  display: inline-block;
   padding: 10px 0px;
-  font-family: $font-family-title;
   text-align: center;
+  font: {
+    family: $font-family-title;
+    weight: $font-weight-title;
+  };
 }
 
 .subtitle {
@@ -39,21 +43,31 @@ html {
   position: sticky;
   top: 0;
   z-index: 1;
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  justify-content: center;
   background-color: $color-background-primary;
   box-shadow: $box-shadow-background-primary;
 
-  &__title {
-    margin-right: 20px;
+  &__container {
+    position: relative;
+    margin: 0 20px;
+    text-align: center;
+
+    @media screen and (max-width: 799px) {
+      display: flex;
+      flex-flow: column nowrap;
+    }
   }
 
   &__contact-button {
     @include transition-primary(#{opacity});
 
     opacity: 1;
+
+    @media screen and (min-width: 800px) {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
 
     &_hidden {
       pointer-events: none;
@@ -84,7 +98,7 @@ html {
 
 .buttons-container {
   margin: 10px 0px;
-  padding: 0px 10px;
+  padding: 0px 20px;
   text-align: center;
   max-width: 500px;
   margin: auto;
@@ -254,7 +268,7 @@ html {
 
   &__item {
     display: block;
-    padding: 15px;
+    padding: 15px 20px;
   }
 
   &__title {
@@ -266,7 +280,7 @@ html {
   }
 
   &__expand-button {
-    @include transition-primary(#{transform});
+    @include transition-primary(#{transform, background-color});
 
     display: inline-block;
     position: relative;
@@ -300,6 +314,10 @@ html {
     }
   }
 
+  &__title:hover &__expand-button {
+    background-color: $color-background-action-hover;
+  }
+
   &__title-text {
     flex: 1;
   }
@@ -323,6 +341,7 @@ html {
 
   &__item_expanded &__expand-button {
     transform: rotate(90deg);
+    background-color: $color-background-action-active;
 
     &::before {
       opacity: 0;
@@ -337,5 +356,80 @@ html {
     height: 100%;
     opacity: 1;
     transform: scaleY(1);
+  }
+}
+
+.slider {
+  $slider-slide-width: 300px;
+  $slider-slide-height: 300px;
+  $slider-button-size: 10px;
+
+  display: block;
+  margin: auto;
+  width: $slider-slide-width;
+
+  &__view {
+    display: block;
+    overflow: hidden;
+    width: $slider-slide-width;
+    height: $slider-slide-height;
+    border-radius: $border-radius-s;
+    background-color: $color-background-blank;
+    box-shadow: $box-shadow-background-blank;
+  }
+
+  &__slides {
+    @include transition-secondary(#{transform});
+
+    display: block;
+    width: 100%;
+    height: 100%;
+    white-space: nowrap;
+    font-size: 0;
+    transform: translateX(0);
+  }
+
+  &__slide {
+    @include font-size-primary;
+
+    display: inline-block;
+    white-space: normal;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+  }
+
+  &__buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 10px;
+  }
+
+  &__button {
+    @include transition-primary(#{background-color});
+
+    display: inline-block;
+    width: $slider-button-size;
+    height: $slider-button-size;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: $color-background-action;
+
+    &:hover {
+      background-color: $color-background-action-hover;
+    }
+
+    &:active {
+      background-color: $color-background-action-active;
+    }
+
+    &_pressed {
+      cursor: default;
+      pointer-events: none;
+      background-color: $color-background-action-active;
+    }
   }
 }
