@@ -6,6 +6,8 @@ $font-weight-primary: 200;
 $font-weight-action: 400;
 $font-weight-title: 700;
 
+$header-height: 70px;
+
 $color-background-primary: #fffdf7;
 $color-background-action: #e0c8bb;
 $color-background-action-hover: #ecdbd3;
@@ -24,5 +26,6 @@ $transition-timing-function-secondary: ease;
 $border-radius-xs: 2px;
 $border-radius-s: 6px;
 
-$box-shadow-background-primary: 0px 4px 20px 20px $color-background-primary;
+$box-shadow-background-top-primary: 0px -8px 20px 20px $color-background-primary;
+$box-shadow-background-bottom-primary: 0px 8px 20px 20px $color-background-primary;
 $box-shadow-background-blank: 0px 0px 5px 2px #f7f7f7;

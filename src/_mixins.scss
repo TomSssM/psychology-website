@@ -33,3 +33,11 @@
     timing-function: $transition-timing-function-secondary;
   }
 }
+
+@mixin background-image-center() {
+  background: {
+    repeat: no-repeat;
+    position: center;
+    size: cover;
+  }
+}
