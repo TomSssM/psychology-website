@@ -372,6 +372,10 @@ html {
     background-color: $color-background-action-hover;
   }
 
+  &__title:active &__expand-button {
+    background-color: $color-background-action-active;
+  }
+
   &__title-text {
     flex: 1;
   }
@@ -483,7 +487,7 @@ html {
     &_pressed {
       cursor: default;
       pointer-events: none;
-      background-color: $color-background-action-active;
+      background-color: $color-background-action-focus;
     }
   }
 }
