@@ -30,85 +30,100 @@ function singleton(value, {kind}) {
   }
 }
 
-class View {
-  static block = null;
-
-  static init() {
-    if (this.block === null) {
-      this.block = this.name.toLowerCase();
+class StringUtils {
+  static isUpperCase(value) {
+    if (typeof value !== 'string') {
+      return false;
     }
 
-    document.querySelectorAll(`.${this.block}`).forEach((element) => {
-      new this({element});
-    });
+    return this.toUpperCase(value) === value;
   }
 
-  constructor({element: elementOption}) {
-    const element = elementOption instanceof Element
-      ? elementOption
-      : typeof elementOption === 'string'
-      ? document.getElementById(elementOption)
-      : null;
-
-    if (!element) {
-      throw new Error(`Cannot find element for ${this.constructor.name}`);
+  static isLowerCase(value) {
+    if (typeof value !== 'string') {
+      return false;
     }
 
-    if (this.constructor.block === null) {
-      this.constructor.block = this.constructor.name.toLowerCase();
+    return this.toLowerCase(value) === value;
+  }
+
+  static toLowerCase(value) {
+    if (typeof value !== 'string') {
+      return '';
     }
 
-    this.block = this.constructor.block;
+    return value.toLowerCase();
+  }
 
-    if (!element.classList.contains(this.block)) {
-      element.classList.add(this.block);
+  static toUpperCase(value) {
+    if (typeof value !== 'string') {
+      return '';
+    }
+
+    return value.toUpperCase();
+  }
+
+  static toKebabCase(value) {
+    let result = '';
+
+    for (const character of value) {
+      if (this.isUpperCase(character)) {
+        result += `${this.toLowerCase(character)}-`;
+      }
+    }
+
+    if (result.endsWith('-')) {
+      result = result.slice(0, -1);
+    }
+
+    return result;
+  }
+}
+
+class Block {
+  static block = null;
+
+  constructor({block: blockOption, element: elementOption}) {
+    let block;
+    let element;
+
+    if (blockOption && typeof blockOption === 'string') {
+      block = blockOption;
+    }
+
+    if (this.constructor.block && typeof this.constructor.block === 'string') {
+      block = this.constructor.block;
+    } else {
+      block = StringUtils.toKebabCase(this.constructor.name);
+    }
+
+    if (elementOption instanceof Element) {
+      element = elementOption;
+    }
+
+    if (typeof elementOption === 'string') {
+      element = document.getElementById(elementOption);
     }
 
     this.state = {
-      element,
-      listeners: new Map()
-    };
-  }
-
-  on(...args) {
-    if (args.length < 2) {
-      return;
-    }
-
-    if (args.length === 2) {
-      const [eventName, handler] = args;
-      return this.on(this.state.element, eventName, handler);
-    }
-
-    const [targetElement, eventName, handlerOption] = args;
-
-    const handler = handlerOption.bind(this);
-    const target = this.find(targetElement);
-
-    if (target === null) {
-      return;
-    }
-
-    target.addEventListener(eventName, handler);
-
-    const listeners = this.state.listeners.get(eventName) ?? [];
-    listeners.push({target, handler});
-    this.state.listeners.set(eventName, listeners);
-  }
-
-  delegate(targetElement, eventName, eventHandler) {
-    const handleDelegate = (event) => {
-      const target = event.target.closest(this.elem(targetElement));
-      if (!target) {
-        return;
-      }
-      eventHandler.call(this, target, event);
+      block,
+      element
     };
 
-    this.on(this.state.element, eventName, handleDelegate);
+    if (this.element && !this.element.classList.contains(this.block)) {
+      this.element.classList.add(this.block);
+    }
   }
 
-  elem(element = '', className = true) {
+  get block() {
+    return this.state.block;
+  }
+
+  get element() {
+    return this.state.element;
+  }
+
+  elem(element = '', className = false) {
     const result = `${this.block}__${element}`;
 
     if (className) {
@@ -118,149 +133,13 @@ class View {
     return result;
   }
 
-  find(targetElement) {
-    if (!targetElement) {
-      return this.element;
-    }
-
-    if (targetElement instanceof Element) {
-      return targetElement;
-    }
-
-    return this.state.element.querySelector(this.elem(targetElement));
-  }
-
-  findAll(targetElement) {
-    if (!targetElement) {
-      return [];
-    }
-
-    return Array.from(this.state.element.querySelectorAll(this.elem(targetElement)));
-  }
-
-  findOn(targetElement, elementName) {
-    const target = this.find(targetElement);
-
-    if (target === null) {
-      return null;
-    }
-
-    const result = target.querySelector(this.elem(elementName));
-
-    if (result) {
-      return result;
-    }
-
-    return target.closest(this.elem(elementName));
-  }
-
-  getMod(...args) {
-    if (args.length < 1) {
-      return;
-    }
-
-    if (args.length === 1) {
-      const [modName] = args;
-      return this.getMod(this.state.element, modName);
-    }
-
-    const [targetElement, modName] = args;
-    const target = this.find(targetElement);
-    const {mods} = this.parseClassName(target);
-    const mod = mods.find((mod) => mod.modName === modName);
-
-    if (mod) {
-      return mod.modValue;
-    }
-  }
-
-  getElemMod(targetElement, modName) {
-    return this.getMod(this.find(targetElement), modName);
-  }
-
-  setMod(...args) {
-    if (args.length < 1) {
-      return;
-    }
-
-    if (args.length === 1 || args.length === 2) {
-      const [modName, modValue] = args;
-
-      if (modName instanceof Element) {
-        return this.setMod(modName, modValue, true);
-      }
-
-      return this.setMod(this.state.element, modName, modValue);
-    }
-
-    const [targetElement, modName, modValue = true] = args;
-    const target = this.find(targetElement);
-    const {elementName, mods} = this.parseClassName(target);
-
-    if (this.state.element === target) {
-      this.onSetMod?.[modName]?.call(this, modValue);
-    }
-
-    if (modValue === false) {
-      mods.forEach((mod) => {
-        if (mod.modName !== modName) {
-          return;
-        }
-        target.classList.remove(mod.className);
-      });
-    } else {
-      let newClassName = elementName ? this.elem(elementName, false) : this.block;
-
-      newClassName = `${newClassName}_${modName}`;
-
-      if (modValue !== true) {
-        newClassName = `${newClassName}_${modValue}`;
-      }
-
-      target.classList.add(newClassName);
-    }
-  }
-
-  setElemMod(targetElement, modName, modValue = true) {
-    this.setMod(this.find(targetElement), modName, modValue);
-  }
-
-  toggleMod(...args) {
-    if (args.length < 1) {
-      return;
-    }
-
-    if (args.length === 1 || args.length === 2) {
-      const [modName, modValue] = args;
-
-      if (modName instanceof Element) {
-        return this.toggleMod(modName, modValue, true);
-      }
-
-      return this.toggleMod(this.state.element, modName, modValue);
-    }
-
-    const [targetElement, modName, modValue = true] = args;
-    const hasMod = Boolean(this.getMod(targetElement, modName));
-
-    if (hasMod) {
-      this.setMod(targetElement, modName, false);
-    } else {
-      this.setMod(targetElement, modName, modValue);
-    }
-  }
-
-  toggleElemMod(targetElement, modName, modValue = true) {
-    this.toggleMod(this.find(targetElement), modName, modValue);
-  }
-
-  parseClassName(target) {
+  parseClassName() {
     const result = {
       elementName: '',
       mods: []
     };
 
-    for (const className of target.classList) {
+    for (const className of this.element.classList) {
       if (!className.startsWith(this.block)) {
         continue;
       }
@@ -290,9 +169,50 @@ class View {
     return result;
   }
 
-  getParams(targetElement) {
-    const target = targetElement ? this.find(targetElement) : this.state.element;
-    const paramsAttribute = target.dataset?.params;
+  getMod(modName) {
+    const {mods} = this.parseClassName();
+    const mod = mods.find((mod) => mod.modName === modName);
+
+    if (mod) {
+      return mod.modValue;
+    }
+  }
+
+  setMod(modName, modValue = true) {
+    const {elementName, mods} = this.parseClassName();
+
+    if (modValue === false) {
+      mods.forEach((mod) => {
+        if (mod.modName !== modName) {
+          return;
+        }
+        this.element.classList.remove(mod.className);
+      });
+    } else if (modValue) {
+      let newClassName = elementName ? this.elem(elementName) : this.block;
+
+      newClassName = `${newClassName}_${modName}`;
+
+      if (modValue !== true) {
+        newClassName = `${newClassName}_${modValue}`;
+      }
+
+      this.element.classList.add(newClassName);
+    }
+  }
+
+  toggleMod(modName, modValue) {
+    const hasMod = Boolean(this.getMod(modName));
+
+    if (hasMod) {
+      this.setMod(modName, false);
+    } else {
+      this.setMod(modName, modValue);
+    }
+  }
+
+  getParams() {
+    const paramsAttribute = this.element.dataset?.params;
 
     if (!paramsAttribute) {
       return {};
@@ -301,50 +221,16 @@ class View {
     return JSON.parse(paramsAttribute);
   }
 
-  getParam(...args) {
-    if (args.length < 1) {
-      return;
-    }
-
-    if (args.length === 1) {
-      const [paramName] = args;
-      return this.getParam(this.state.element, paramName);
-    }
-
-    const [targetElement, paramName] = args;
-
-    return this.getParams(targetElement)[paramName];
+  getParam(paramName) {
+    return this.getParams()[paramName];
   }
 
-  setParams(...args) {
-    if (args.length < 1) {
-      return;
-    }
-
-    if (args.length === 1) {
-      const [params] = args;
-      return this.setParams(this.state.element, params);
-    }
-
-    const [targetElement, params] = args;
-    const target = targetElement ? this.find(targetElement) : this.state.element;
-
-    target.dataset.params = JSON.stringify(params);
+  setParams(params) {
+    this.element.dataset.params = JSON.stringify(params);
   }
 
-  setParam(...args) {
-    if (args.length < 2) {
-      return;
-    }
-
-    if (args.length === 2) {
-      const [paramName, paramValue] = args;
-      return this.setParam(this.state.element, paramName, paramValue);
-    }
-
-    const [targetElement, paramName, paramValue] = args;
-    const target = this.find(targetElement);
-    const params = this.getParams(target);
+  setParam(paramName, paramValue) {
+    const params = this.getParams();
 
     if (paramValue === null) {
       delete params[paramName];
@@ -352,7 +238,138 @@ class View {
       params[paramName] = paramValue;
     }
 
-    this.setParams(target, params);
+    this.setParams(params);
+  }
+}
+
+class View extends Block {
+  static block = null;
+
+  static init() {
+    const block = this.block ? this.block : StringUtils.toKebabCase(this.name);
+
+    document.querySelectorAll(`.${block}`).forEach((element) => {
+      new this({element}).init();
+    });
+  }
+
+  constructor({element}) {
+    super({element});
+
+    this.state = Object.assign({}, this.state, {
+      listeners: new Map(),
+      appState: null
+    });
+  }
+
+  setMod(modName, modValue = true) {
+    this.onSetMod?.[modName]?.call(this, modValue);
+    super.setMod(modName, modValue);
+  }
+
+  on(...args) {
+    if (args.length < 2) {
+      return;
+    }
+
+    if (args.length === 2) {
+      const [eventName, handler] = args;
+      return this.on(this.element, eventName, handler);
+    }
+
+    const [targetElement, eventName, handlerOption] = args;
+
+    const handler = handlerOption.bind(this);
+    const target = this.find(targetElement);
+
+    if (!target) {
+      return;
+    }
+
+    target.element.on(eventName, handler);
+
+    const listeners = this.state.listeners.get(eventName) ?? [];
+    listeners.push({target, handler});
+    this.state.listeners.set(eventName, listeners);
+  }
+
+  delegate(targetElement, eventName, eventHandler) {
+    const handleDelegate = (event) => {
+      const target = event.target.closest(this.elem(targetElement, true));
+      if (!target) {
+        return;
+      }
+      eventHandler.call(this, target, event);
+    };
+
+    this.on(this.element, eventName, handleDelegate);
+  }
+
+  elemify(targetElement) {
+    return new Block({block: this.block, element: targetElement});
+  }
+
+  find(targetElement) {
+    let target;
+
+    if (!targetElement) {
+      target = this.element;
+    }
+
+    if (targetElement instanceof Element) {
+      target = targetElement;
+    }
+
+    if (typeof targetElement === 'string') {
+      target = this.element.querySelector(this.elem(targetElement, true));
+    }
+
+    if (!target) {
+      return;
+    }
+
+    return this.elemify(target);
+  }
+
+  findAll(targetElement) {
+    if (typeof targetElement !== 'string') {
+      return [];
+    }
+
+    return Array.from(this.element.querySelectorAll(this.elem(targetElement, true)))
+      .map((element) => new Block({block: this.block, element}));
+  }
+
+  findOn(targetElement, elementName) {
+    const target = this.find(targetElement);
+
+    if (target === null) {
+      return;
+    }
+
+    let result = target.element.querySelector(this.elem(elementName, true));
+
+    if (!result) {
+      result = target.element.closest(this.elem(elementName, true));
+    }
+
+    return this.elemify(result);
+  }
+
+  getElemMod(targetElement, modName) {
+    return this.find(targetElement).getMod(modName);
+  }
+
+  setElemMod(targetElement, modName, modValue) {
+    this.find(targetElement).setMod(modName, modValue);
+  }
+
+  toggleElemMod(targetElement, modName, modValue) {
+    this.find(targetElement).toggleMod(modName, modValue);
+  }
+
+  init() {
+    /* empty */
   }
 
   destruct() {
@@ -360,6 +377,7 @@ class View {
       listeners.forEach(({target, handler}) => {
         target.removeEventListener(eventName, handler);
       });
+      this.state.listeners.delete(eventName);
     });
   }
 }
@@ -375,11 +393,10 @@ class Accordion extends View {
   }
 
   onClick(target) {
-    const item = this.findOn(target, 'item');
-    this.toggleElemMod(item, 'expanded');
+    this.findOn(target, 'item').toggleMod('expanded');
   }
 }
 
-Accordion.init();
+new Accordion({element: document.querySelector('.accordion')});
 
 // ----------------------------------------------------------------------
