@@ -107,12 +107,9 @@ class Block {
 
     this.state = {
       block,
-      element
+      element,
+      listeners: new Map()
     };
-
-    if (this.element && !this.element.classList.contains(this.block)) {
-      this.element.classList.add(this.block);
-    }
   }
 
   get block() {
@@ -135,12 +132,18 @@ class Block {
 
   parseClassName() {
     const result = {
-      elementName: '',
+      block: null,
+      elementName: null,
       mods: []
     };
 
     for (const className of this.element.classList) {
       if (!className.startsWith(this.block)) {
+        continue;
+      }
+
+      if (className === this.block) {
+        result.block = className;
         continue;
       }
 
@@ -179,7 +182,11 @@ class Block {
   }
 
   setMod(modName, modValue = true) {
-    const {elementName, mods} = this.parseClassName();
+    const {block, elementName, mods} = this.parseClassName();
+
+    if (!block) {
+      return;
+    }
 
     if (modValue === false) {
       mods.forEach((mod) => {
@@ -232,13 +239,64 @@ class Block {
   setParam(paramName, paramValue) {
     const params = this.getParams();
 
-    if (paramValue === null) {
+    if (paramValue === null || paramValue === undefined) {
       delete params[paramName];
     } else {
       params[paramName] = paramValue;
     }
 
     this.setParams(params);
+  }
+
+  on(eventName, handler, context) {
+    const boundHandler = handler.bind(context ?? this);
+    const listeners = this.state.listeners.get(this.element) ?? [];
+
+    listeners.push({eventName, handler, boundHandler});
+
+    this.state.listeners.set(this.element, listeners);
+
+    this.element.addEventListener(eventName, boundHandler);
+  }
+
+  off(eventName, handler) {
+    const listeners = this.state.listeners.get(this.element) ?? [];
+
+    this.state.listeners.set(this.element, listeners.filter(({
+      eventName: listenerEventName,
+      handler: listenerHandler,
+      boundHandler
+    }) => {
+      if (
+        listenerEventName === eventName && (
+          listenerHandler === handler || boundHandler === handler)
+      ) {
+        this.element.removeEventListener(eventName, boundHandler);
+
+        return false;
+      }
+
+      return true;
+    }));
+  }
+
+  destruct() {
+    const listeners = this.state.listeners.get(this.element);
+
+    this.state.listeners.delete(this.element);
+
+    if (!Array.isArray(listeners)) {
+      return;
+    }
+
+    listeners.forEach(({eventName, handler}) => {
+      this.element.removeEventListener(eventName, handler);
+    });
+  }
+
+  remove() {
+    this.destruct();
+    this.element.remove();
   }
 }
 
@@ -249,7 +307,7 @@ class View extends Block {
     const block = this.block ? this.block : StringUtils.toKebabCase(this.name);
 
     document.querySelectorAll(`.${block}`).forEach((element) => {
-      new this({element}).init();
+      new this({element});
     });
   }
 
@@ -257,7 +315,6 @@ class View extends Block {
     super({element});
 
     this.state = Object.assign({}, this.state, {
-      listeners: new Map(),
       appState: null
     });
   }
@@ -274,39 +331,47 @@ class View extends Block {
 
     if (args.length === 2) {
       const [eventName, handler] = args;
-      return this.on(this.element, eventName, handler);
+      super.on(eventName, handler);
+      return;
     }
 
-    const [targetElement, eventName, handlerOption] = args;
-
-    const handler = handlerOption.bind(this);
+    const [targetElement, eventName, handler] = args;
     const target = this.find(targetElement);
 
     if (!target) {
       return;
     }
 
-    target.element.on(eventName, handler);
-
-    const listeners = this.state.listeners.get(eventName) ?? [];
-    listeners.push({target, handler});
-    this.state.listeners.set(eventName, listeners);
+    target.on(eventName, handler, this);
   }
 
   delegate(targetElement, eventName, eventHandler) {
     const handleDelegate = (event) => {
       const target = event.target.closest(this.elem(targetElement, true));
+
       if (!target) {
         return;
       }
-      eventHandler.call(this, target, event);
+
+      eventHandler.call(this, this.elemify(target), event);
     };
 
-    this.on(this.element, eventName, handleDelegate);
+    this.on(eventName, handleDelegate);
   }
 
   elemify(targetElement) {
-    return new Block({block: this.block, element: targetElement});
+    if (targetElement instanceof Block) {
+      return targetElement;
+    }
+
+    const block = new Block({block: this.block, element: targetElement});
+
+    block.state.listeners = this.state.listeners;
+
+    return block;
+  }
+
+  getBlock() {
   }
 
   find(targetElement) {
@@ -343,7 +408,7 @@ class View extends Block {
   findOn(targetElement, elementName) {
     const target = this.find(targetElement);
 
-    if (target === null) {
+    if (!target) {
       return;
     }
 
@@ -368,17 +433,18 @@ class View extends Block {
     this.find(targetElement).toggleMod(modName, modValue);
   }
 
-  init() {
-    /* empty */
+  destruct() {
+    Array.from(this.state.listeners.entries()).forEach(([element, listeners]) => {
+      listeners.forEach(({eventName, boundHandler}) => {
+        element.removeEventListener(eventName, boundHandler);
+      });
+      this.state.listeners.delete(element);
+    });
   }
 
-  destruct() {
-    Array.from(this.state.listeners.entries()).forEach(([eventName, listeners]) => {
-      listeners.forEach(({target, handler}) => {
-        target.removeEventListener(eventName, handler);
-      });
-      this.state.listeners.delete(eventName);
-    });
+  remove() {
+    this.destruct();
+    this.state.element.remove();
   }
 }
 
@@ -389,14 +455,14 @@ class View extends Block {
 class Accordion extends View {
   constructor(options) {
     super(options);
-    this.delegate('title', 'click', this.onClick);
+    this.delegate('title', 'click', this.onTitleClick);
   }
 
-  onClick(target) {
-    this.findOn(target, 'item').toggleMod('expanded');
+  onTitleClick(title) {
+    this.findOn(title, 'item').toggleMod('expanded');
   }
 }
 
-new Accordion({element: document.querySelector('.accordion')});
+Accordion.init();
 
 // ----------------------------------------------------------------------
