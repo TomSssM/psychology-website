@@ -80,6 +80,110 @@ class StringUtils {
   }
 }
 
+class ObjectUtils {
+  static getKeys(obj) {
+    return Object.keys(obj);
+  }
+
+  static getKeysCount(obj) {
+    return this.getKeys(obj).length;
+  }
+
+  static isEqual(obj1, obj2) {
+    if (this.getKeysCount(obj1) !== this.getKeysCount(obj2)) {
+      return false;
+    }
+
+    return this.isLeftIntersect(obj1, obj2);
+  }
+
+  static includesLeft(obj1, obj2) {
+    for (const keyName of this.getKeys(obj1)) {
+      if (obj1[keyName] !== obj2[keyName]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  static includesRight(obj1, obj2) {
+    return this.includesLeft(obj2, obj1);
+  }
+}
+
+class BlockUtils {
+  static getBlockName(BlockClass) {
+    if (BlockClass.block && typeof BlockClass.block === 'string') {
+      return BlockClass.block;
+    }
+
+    if (typeof BlockClass.name === 'string') {
+      return StringUtils.toKebabCase(BlockClass.name);
+    }
+
+    return '';
+  }
+
+  static parseClassName(blockName, element) {
+    const result = {
+      block: null,
+      elementName: null,
+      mods: []
+    };
+
+    for (const className of element.classList) {
+      if (!className.startsWith(blockName)) {
+        continue;
+      }
+
+      if (className === blockName) {
+        result.block = className;
+        continue;
+      }
+
+      const parts = className.split('__');
+      let elementName;
+      let modName;
+      let modValue;
+
+      if (parts.length === 1) {
+        ([, modName, modValue = true] = parts[0].split('_'));
+      }
+
+      if (parts.length === 2) {
+        ([elementName, modName, modValue = true] = parts[1].split('_'));
+      }
+
+      if (elementName) {
+        result.elementName = elementName;
+      }
+
+      if (modName) {
+        result.mods.push({modName, modValue, className});
+      }
+    }
+
+    return result;
+  }
+}
+
+class ViewUtils {
+  static triggerModHandler(view, modName, modValue = true) {
+    if (!view.onSetMod) {
+      return;
+    }
+
+    const setModHandler = view.onSetMod[modName];
+
+    if (typeof setModHandler !== 'function') {
+      return;
+    }
+
+    setModHandler.call(view, modValue);
+  }
+}
+
 class Block {
   static block = null;
 
@@ -89,12 +193,8 @@ class Block {
 
     if (blockOption && typeof blockOption === 'string') {
       block = blockOption;
-    }
-
-    if (this.constructor.block && typeof this.constructor.block === 'string') {
-      block = this.constructor.block;
     } else {
-      block = StringUtils.toKebabCase(this.constructor.name);
+      block = BlockUtils.getBlockName(this.constructor);
     }
 
     if (elementOption instanceof Element) {
@@ -130,59 +230,36 @@ class Block {
     return result;
   }
 
-  parseClassName() {
-    const result = {
-      block: null,
-      elementName: null,
-      mods: []
-    };
+  getMods() {
+    const {mods} = BlockUtils.parseClassName(this.block, this.element);
 
-    for (const className of this.element.classList) {
-      if (!className.startsWith(this.block)) {
-        continue;
-      }
+    return mods.reduce((acc, {modName, modValue}) => {
+      acc[modName] = modValue;
 
-      if (className === this.block) {
-        result.block = className;
-        continue;
-      }
-
-      const parts = className.split('__');
-      let elementName;
-      let modName;
-      let modValue;
-
-      if (parts.length === 1) {
-        ([, modName, modValue = true] = parts[0].split('_'));
-      }
-
-      if (parts.length === 2) {
-        ([elementName, modName, modValue = true] = parts[1].split('_'));
-      }
-
-      if (elementName) {
-        result.elementName = elementName;
-      }
-
-      if (modName) {
-        result.mods.push({modName, modValue, className});
-      }
-    }
-
-    return result;
+      return acc;
+    }, {});
   }
 
   getMod(modName) {
-    const {mods} = this.parseClassName();
-    const mod = mods.find((mod) => mod.modName === modName);
+    return this.getMods()[modName];
+  }
 
-    if (mod) {
-      return mod.modValue;
-    }
+  setMods(mods) {
+    Object.keys(this.getMods()).forEach((modName) => {
+      if (modName in mods) {
+        return;
+      }
+
+      this.setMod(modName, false);
+    });
+
+    Object.entries(mods).forEach(([modName, modValue]) => {
+      this.setMod(modName, modValue);
+    });
   }
 
   setMod(modName, modValue = true) {
-    const {block, elementName, mods} = this.parseClassName();
+    const {block, elementName, mods} = BlockUtils.parseClassName(this.block, this.element);
 
     if (!block) {
       return;
@@ -219,7 +296,13 @@ class Block {
   }
 
   getParams() {
-    const paramsAttribute = this.element.dataset?.params;
+    const datasetAttribute = this.element.dataset;
+
+    if (!datasetAttribute) {
+      return {};
+    }
+
+    const paramsAttribute = datasetAttribute.params;
 
     if (!paramsAttribute) {
       return {};
@@ -249,20 +332,33 @@ class Block {
   }
 
   on(eventName, handler, context) {
-    const boundHandler = handler.bind(context ?? this);
-    const listeners = this.state.listeners.get(this.element) ?? [];
+    const boundHandler = handler.bind(context || this);
+    const events = this.state.listeners.get(this.element) || {};
+    const listeners = events[eventName] || [];
 
-    listeners.push({eventName, handler, boundHandler});
+    listeners.push({handler, boundHandler});
 
-    this.state.listeners.set(this.element, listeners);
+    events[eventName] = listeners;
+
+    this.state.listeners.set(this.element, events);
 
     this.element.addEventListener(eventName, boundHandler);
   }
 
   off(eventName, handler) {
-    const listeners = this.state.listeners.get(this.element) ?? [];
+    const events = this.state.listeners.get(this.element);
 
-    this.state.listeners.set(this.element, listeners.filter(({
+    if (!events) {
+      return;
+    }
+
+    const listeners = events[eventName];
+
+    if (!Array.isArray(listeners)) {
+      return;
+    }
+
+    events[eventName] = listeners.filter(({
       eventName: listenerEventName,
       handler: listenerHandler,
       boundHandler
@@ -277,20 +373,32 @@ class Block {
       }
 
       return true;
-    }));
+    });
+  }
+
+  trigger(eventName, detail) {
+    this.element.dispatchEvent(
+      new CustomEvent(eventName, {
+        bubbles: true,
+        cancelable: true,
+        detail
+      })
+    );
   }
 
   destruct() {
-    const listeners = this.state.listeners.get(this.element);
+    const events = this.state.listeners.get(this.element);
 
     this.state.listeners.delete(this.element);
 
-    if (!Array.isArray(listeners)) {
+    if (!events) {
       return;
     }
 
-    listeners.forEach(({eventName, handler}) => {
-      this.element.removeEventListener(eventName, handler);
+    Object.entries(events).forEach(([eventName, listeners]) => {
+      listeners.forEach(({boundHandler}) => {
+        this.element.removeEventListener(eventName, boundHandler);
+      });
     });
   }
 
@@ -304,7 +412,7 @@ class View extends Block {
   static block = null;
 
   static init() {
-    const block = this.block ? this.block : StringUtils.toKebabCase(this.name);
+    const block = BlockUtils.getBlockName(this);
 
     document.querySelectorAll(`.${block}`).forEach((element) => {
       new this({element});
@@ -315,13 +423,13 @@ class View extends Block {
     super({element});
 
     this.state = Object.assign({}, this.state, {
-      appState: null
+      appState: null,
+      accessorProps: {}
     });
   }
 
-  setMod(modName, modValue = true) {
-    this.onSetMod?.[modName]?.call(this, modValue);
-    super.setMod(modName, modValue);
+  get accessorProps() {
+    return this.state.accessorProps;
   }
 
   on(...args) {
@@ -343,6 +451,48 @@ class View extends Block {
     }
 
     target.on(eventName, handler, this);
+  }
+
+  off(...args) {
+    if (args.length < 2) {
+      return;
+    }
+
+    if (args.length === 2) {
+      const [eventName, handler] = args;
+      super.off(eventName, handler);
+      return;
+    }
+
+    const [targetElement, eventName, handler] = args;
+    const target = this.find(targetElement);
+
+    if (!target) {
+      return;
+    }
+
+    target.off(eventName, handler);
+  }
+
+  trigger(...args) {
+    if (args.length < 2) {
+      return;
+    }
+
+    if (args.length === 2) {
+      const [eventName, detail] = args;
+      super.trigger(eventName, detail);
+      return;
+    }
+
+    const [targetElement, eventName, detail] = args;
+    const target = this.find(targetElement);
+
+    if (!target) {
+      return;
+    }
+
+    target.trigger(eventName, detail);
   }
 
   delegate(targetElement, eventName, eventHandler) {
@@ -374,7 +524,7 @@ class View extends Block {
   getBlock() {
   }
 
-  find(targetElement) {
+  find(targetElement, mods) {
     let target;
 
     if (!targetElement) {
@@ -385,8 +535,12 @@ class View extends Block {
       target = targetElement;
     }
 
-    if (typeof targetElement === 'string') {
+    if (typeof targetElement === 'string' && !mods) {
       target = this.element.querySelector(this.elem(targetElement, true));
+    }
+
+    if (typeof targetElement === 'string' && mods) {
+      target = this.findAll(targetElement, mods)[0];
     }
 
     if (!target) {
@@ -396,13 +550,19 @@ class View extends Block {
     return this.elemify(target);
   }
 
-  findAll(targetElement) {
+  findAll(targetElement, mods) {
     if (typeof targetElement !== 'string') {
       return [];
     }
 
-    return Array.from(this.element.querySelectorAll(this.elem(targetElement, true)))
+    let blocks = Array.from(this.element.querySelectorAll(this.elem(targetElement, true)))
       .map((element) => new Block({block: this.block, element}));
+
+    if (mods) {
+      blocks = blocks.filter((block) => ObjectUtils.includesLeft(mods, block.getMods()));
+    }
+
+    return blocks;
   }
 
   findOn(targetElement, elementName) {
@@ -425,6 +585,20 @@ class View extends Block {
     return this.find(targetElement).getMod(modName);
   }
 
+  setMods(mods) {
+    Object.entries(mods).forEach(([modName, modValue]) => {
+      ViewUtils.triggerModHandler(this, modName, modValue);
+    });
+
+    super.setMods(mods);
+  }
+
+  setMod(modName, modValue) {
+    ViewUtils.triggerModHandler(this, modName, modValue);
+
+    super.setMod(modName, modValue);
+  }
+
   setElemMod(targetElement, modName, modValue) {
     this.find(targetElement).setMod(modName, modValue);
   }
@@ -434,10 +608,13 @@ class View extends Block {
   }
 
   destruct() {
-    Array.from(this.state.listeners.entries()).forEach(([element, listeners]) => {
-      listeners.forEach(({eventName, boundHandler}) => {
-        element.removeEventListener(eventName, boundHandler);
+    Array.from(this.state.listeners.entries()).forEach(([element, events]) => {
+      Object.entries(events).forEach(([eventName, listeners]) => {
+        listeners.forEach(({boundHandler}) => {
+          element.removeEventListener(eventName, boundHandler);
+        });
       });
+
       this.state.listeners.delete(element);
     });
   }
