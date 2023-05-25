@@ -81,8 +81,27 @@ class StringUtils {
 }
 
 class ObjectUtils {
+  static isObject(value) {
+    if (typeof value === 'object' && value !== null) {
+      if (typeof Object.getPrototypeOf === 'function') {
+        const prototype = Object.getPrototypeOf(value);
+        return prototype === Object.prototype || prototype === null;
+      }
+
+      return Object.prototype.toString.call(value) === '[object Object]';
+    }
+
+    return false;
+  }
+
   static getKeys(obj) {
-    return Object.keys(obj);
+    const RESERVED_KEYS = [
+      '__proto__',
+      'constructor',
+      'prototype'
+    ];
+
+    return Object.keys(obj).filter((keyName) => !RESERVED_KEYS.includes(keyName));
   }
 
   static getKeysCount(obj) {
@@ -109,6 +128,20 @@ class ObjectUtils {
 
   static includesRight(obj1, obj2) {
     return this.includesLeft(obj2, obj1);
+  }
+
+  static deepMerge(...objs) {
+    return objs.reduce((result, current) => {
+      this.getKeys(current).forEach((keyName) => {
+        if (this.isObject(result[keyName]) && this.isObject(current[keyName])) {
+          result[keyName] = this.deepMerge(result[keyName], current[keyName]);
+        } else {
+          result[keyName] = current[keyName];
+        }
+      });
+
+      return result;
+    });
   }
 }
 
@@ -424,12 +457,25 @@ class View extends Block {
 
     this.state = Object.assign({}, this.state, {
       appState: null,
+      modHanders: {},
       accessorProps: {}
     });
   }
 
   get accessorProps() {
     return this.state.accessorProps;
+  }
+
+  get onSetMod() {
+    return this.state.modHanders;
+  }
+
+  set onSetMod(modHanders) {
+    if (!ObjectUtils.isObject(modHanders)) {
+      return;
+    }
+
+    Object.assign(this.onSetMod, modHanders);
   }
 
   on(...args) {
@@ -641,5 +687,30 @@ class Accordion extends View {
 }
 
 Accordion.init();
+
+// ----------------------------------------------------------------------
+
+// ------------------------------- Test ---------------------------------
+
+test();
+
+function test() {
+}
+
+function describe(testName, testCase) {
+  try {
+    testCase();
+  } catch (error) {
+    console.error(`[FAIL] ${testName}: ${error.message}`);
+  }
+
+  console.info(`[PASS] ${testName}`);
+}
+
+function expect(condition, errorMessage) {
+  if (!condition) {
+    throw new Error(errorMessage);
+  }
+}
 
 // ----------------------------------------------------------------------
