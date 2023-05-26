@@ -143,6 +143,24 @@ class ObjectUtils {
       return result;
     });
   }
+
+  static filter(obj, callback) {
+    return Object.fromEntries(Object.entries(obj).filter(
+      ([keyName, keyValue], index) => callback(keyValue, keyName, index)
+    ));
+  }
+
+  static map(obj, callback) {
+    return Object.fromEntries(Object.entries(obj).map(
+      ([keyName, keyValue], index) => [keyName, callback(keyValue, keyName, index)]
+    ));
+  }
+
+  static mapKeys(obj, callback) {
+    return Object.fromEntries(Object.entries(obj).map(
+      ([keyName, keyValue], index) => [callback(keyName, keyValue, index), keyValue]
+    ));
+  }
 }
 
 class BlockUtils {
@@ -253,6 +271,10 @@ class Block {
     return this.state.element;
   }
 
+  get params() {
+    return this.params;
+  }
+
   elem(element = '', className = false) {
     const result = `${this.block}__${element}`;
 
@@ -261,6 +283,10 @@ class Block {
     }
 
     return result;
+  }
+
+  getName() {
+    return this.block;
   }
 
   getMods() {
@@ -444,6 +470,35 @@ class Block {
 class View extends Block {
   static block = null;
 
+  static bemjson = {
+    onBlock() {
+      /* empty */
+    },
+    onElem: {}
+  };
+
+  static get onBlock() {
+    return this.bemjson.onBlock;
+  }
+
+  static set onBlock(value) {
+    if (typeof value !== 'function') {
+      return;
+    }
+
+    this.bemjson.onBlock = value;
+  }
+
+  static get onElem() {
+    return this.bemjson.onElem;
+  }
+
+  static set onElem(data) {
+    Object.assign(this.bemjson.onElem, ObjectUtils.filter(
+      data, (value) => typeof value === 'function'
+    ));
+  }
+
   static init() {
     const block = BlockUtils.getBlockName(this);
 
@@ -567,9 +622,6 @@ class View extends Block {
     return block;
   }
 
-  getBlock() {
-  }
-
   find(targetElement, mods) {
     let target;
 
@@ -625,6 +677,9 @@ class View extends Block {
     }
 
     return this.elemify(result);
+  }
+
+  findBlock() {
   }
 
   getElemMod(targetElement, modName) {
