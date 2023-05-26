@@ -18,14 +18,14 @@ The way onBlock property is going to be invoked is by using dependency injection
 
 ### Little step but MVC ideas
 
-There are JS View params, for example when you ask the library to render a view you can do { block, ...params } like { block, value: 1, smth: new Smth() } and these params from above will be passed as JS values into onBlock / onElem via the ctx.blockParams() / ctx.params() interface.
+There are JS View params, for example when you ask the library to render a view you can do { block, ...params } like { block, value: 1, smth: new Smth() } and these params from above will be passed as JS values into onBlock / onElem via the ctx.blockParams() / ctx.params() interface
 
-And there are also the params that we get via this.getParam() this.getParams() in an instance part. These params are defined by what the onBlock / onElem returns in bemjson as in { block, params: { ...here } }.
+And there are also the params that we get via this.getParam() this.getParams() in an instance part. These params are defined by what the onBlock / onElem returns in bemjson as in { block, params: { ...here } }
 
-Therefore the jsparams -> bemjson params is a way to pass data between the View template part and the View JS part. Very handy for example for passing models around by id.
+Therefore the jsparams -> bemjson params is a way to pass data between the View template part and the View JS part. Very handy for example for passing models around by id
 
-Note: maybe we should pass the bemjson params as ctx.js({ key: value }) and if we do ctx.js(true) only then does the View gets instantiated.
+Note: maybe we should pass the bemjson params as ctx.js({ key: value }) and if we do ctx.js({ ...params } | true) only then does the View gets instantiated. OR it could be that we only need to call ctx.js(false) IF we don't want the View to have an instance part
 
-The sole job of the Controller is to create the Model somehow (either it gets from the server side code or it calls model.fetch itself) and then render the View by passing a model to it (render html of the View server side and init the View client side or do both at once if client side) and all the rest of the application logic is handled by all the subviews and their communication with the models.
+The sole job of the Controller is to create the Model somehow (either it gets from the server side code or it calls model.fetch itself) and then render the View by passing a model to it (render html of the View server side and init the View client side or do both at once if client side) and all the rest of the application logic is handled by all the subviews and their communication with the models
 
-Now when the models are created server side they are assigned id's. Then these id's become the bemjson params of the Views and all this stuff is transfered client side where models get instantiated with the same id's and Views get the same id's of their models therefore ensuring the same Views end up with the same Model instances.
+Now when the models are created server side they are assigned id's. Then these id's become the bemjson params of the Views and all this stuff is transfered client side where models get instantiated with the same id's and Views get the same id's of their models therefore ensuring the same Views end up with the same Model instances

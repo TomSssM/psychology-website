@@ -513,12 +513,8 @@ class View extends Block {
     this.state = Object.assign({}, this.state, {
       appState: null,
       modHanders: {},
-      accessorProps: {}
+      setters: {}
     });
-  }
-
-  get accessorProps() {
-    return this.state.accessorProps;
   }
 
   get onSetMod() {
@@ -531,6 +527,10 @@ class View extends Block {
     }
 
     Object.assign(this.onSetMod, modHanders);
+  }
+
+  get setters() {
+    return this.state.setters;
   }
 
   on(...args) {
