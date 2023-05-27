@@ -435,6 +435,19 @@ class Block {
     });
   }
 
+  once(eventName, handler, context) {
+    if (!eventName || typeof handler !== 'function') {
+      return;
+    }
+
+    const handleOnce = (...args) => {
+      this.off(eventName, handleOnce);
+      handler.apply(context || this, args);
+    }
+
+    this.on(eventName, handleOnce);
+  }
+
   trigger(eventName, detail) {
     this.element.dispatchEvent(
       new CustomEvent(eventName, {
@@ -573,6 +586,27 @@ class View extends Block {
     }
 
     target.off(eventName, handler);
+  }
+
+  once(...args) {
+    if (args.length < 2) {
+      return;
+    }
+
+    if (args.length === 2) {
+      const [eventName, handler] = args;
+      super.once(eventName, handler);
+      return;
+    }
+
+    const [targetElement, eventName, handler] = args;
+    const target = this.find(targetElement);
+
+    if (!target) {
+      return;
+    }
+
+    target.once(eventName, handler);
   }
 
   trigger(...args) {
@@ -753,6 +787,7 @@ Accordion.init();
 
 function beforeEach() {
   const element = document.createElement('div');
+  element.innerHTML = 'test';
   element.classList.add('test');
   element.classList.add('block');
   element.classList.add('my-view');
@@ -812,9 +847,13 @@ function test5() {
 
   beforeEach();
 
+  class MyBlock extends Block {
+    static block = 'cool-two';
+  }
+
   const element = document.querySelector('.test');
 
-  return new Block({ block: 'cool', element });
+  return new MyBlock({ block: 'cool', element });
 }
 
 function test6() {
@@ -905,7 +944,7 @@ function test12() {
 
   const element = document.querySelector('.test');
 
-  const testBlock = new Block({ block: 'block-getter', element });
+  const testBlock = new Block({ element });
 
   return testBlock.element;
 }
@@ -1611,7 +1650,7 @@ function test43() {
   class MyView extends View {
     onSetMod = {
       visible: function(value) {
-        console.log('triggered visible', {value});
+        console.log('triggered visible', { value, current: this.getMod('visible') });
       }
     };
   }
@@ -1619,7 +1658,7 @@ function test43() {
   class MyOtherView extends MyView {
     onSetMod = {
       open: function(value) {
-        console.log('triggered open', {value});
+        console.log('triggered open', { value, current: this.getMod('open') });
       }
     }
   }
@@ -1649,6 +1688,18 @@ function test44() {
   testBlock.on('click', () => {
     console.log('block click');
   });
+
+  testBlock.once('click', () => {
+    console.log('block once click');
+  });
+
+  testBlock.on('click', () => {
+    console.log('block bound click');
+  }, {});
+
+  testBlock.once('click', () => {
+    console.log('block once bound click');
+  }, {});
 
   testBlock.remove();
 
@@ -1684,8 +1735,16 @@ function test45() {
         console.log('view title click');
       });
 
+      this.once('click', () => {
+        console.log('view once click');
+      });
+
+      this.once('title', 'click', () => {
+        console.log('view title once click');
+      });
+
       this.delegate('item', 'click', () => {
-        console.log('view title delegate click');
+        console.log('view item delegate click');
       });
     }
   }
@@ -1728,8 +1787,16 @@ function test46() {
         console.log('view title click');
       });
 
+      this.once('click', () => {
+        console.log('view once click');
+      });
+
+      this.once('title', 'click', () => {
+        console.log('view title once click');
+      });
+
       this.delegate('item', 'click', () => {
-        console.log('view title delegate click');
+        console.log('view item delegate click');
       });
     }
   }
@@ -1764,6 +1831,7 @@ function test47() {
   myView.find('title');
   myView.find('title');
   myView.find('title');
+  myView.find('title').on('click', () => {});
 }
 
 function test48() {
@@ -1971,8 +2039,8 @@ function test53() {
   return testBlock;
 }
 
-function test53() {
-  // * 53) View on method * //
+function test54() {
+  // * 54) View on method * //
 
   beforeEach();
 
@@ -1994,8 +2062,8 @@ function test53() {
   return myView;
 }
 
-function test54() {
-  // * 54) View off method * //
+function test55() {
+  // * 55) View off method * //
 
   beforeEach();
 
@@ -2018,8 +2086,8 @@ function test54() {
   return myView;
 }
 
-function test55() {
-  // * 55) View on elem method * //
+function test56() {
+  // * 56) View on elem method * //
 
   beforeEach();
 
@@ -2044,8 +2112,8 @@ function test55() {
   return myView;
 }
 
-function test56() {
-  // * 56) View off elem method * //
+function test57() {
+  // * 57) View off elem method * //
 
   beforeEach();
 
@@ -2071,8 +2139,8 @@ function test56() {
   return myView;
 }
 
-function test57() {
-  // * 57) View delegate method * //
+function test58() {
+  // * 58) View delegate method * //
 
   beforeEach();
 
@@ -2118,8 +2186,8 @@ function test57() {
   return myView;
 }
 
-function test58() {
-  // * 58) Block trigger method * //
+function test59() {
+  // * 59) Block trigger method * //
 
   beforeEach();
 
@@ -2136,8 +2204,8 @@ function test58() {
   return testBlock;
 }
 
-function test59() {
-  // * 59) View trigger method * //
+function test60() {
+  // * 60) View trigger method * //
 
   beforeEach();
 
@@ -2197,6 +2265,170 @@ function test59() {
   title.trigger('my-event', { type: 'block-dispatch' });
   myView.trigger('my-event', 'item', { type: 'view-elem-dispatch-2' });
   item.trigger('my-event', { type: 'block-dispatch-2' });
+
+  return myView;
+}
+
+function test61() {
+  // * 61) Block once method * //
+
+  beforeEach();
+
+  const element = document.querySelector('.test');
+
+  const testBlock = new Block({ element });
+
+  testBlock.once('click', (target, event) => {
+    console.log('clicked block once', { target, event });
+  });
+
+  testBlock.once('click', (target, event) => {
+    console.log('clicked block once with error', { target, event });
+    throw new Error('test error');
+  });
+
+  return testBlock;
+}
+
+function test62() {
+  // * 62) View once method * //
+
+  beforeEach();
+
+  class MyView extends View {
+    constructor(options) {
+      super(options);
+
+      this.element.innerHTML = `<span class="${this.elem('title')}">content</span>`;
+
+      this.once('click', (target, event) => {
+        console.log('clicked view once', { target, event });
+      });
+
+      this.once('title', 'click', (target, event) => {
+        console.log('clicked view title once', { target, event });
+      });
+    }
+  }
+
+  const element = document.querySelector('.test');
+
+  const myView = new MyView({ element });
+
+  return myView;
+}
+
+function test63() {
+  // * 63) Block on context * //
+
+  beforeEach();
+
+  const element = document.querySelector('.test');
+
+  const testBlock = new Block({ element });
+
+  const customContext = { name: 'Tom', age: 12 };
+
+  testBlock.on('click', function(target, event) {
+    console.log('on handler', {
+      target,
+      event,
+      context: this,
+      check: this === testBlock
+    });
+  });
+
+  testBlock.once('click', function(target, event) {
+    console.log('once handler', {
+      target,
+      event,
+      context: this,
+      check: this === testBlock
+    });
+  });
+
+  testBlock.on('click', function(target, event) {
+    console.log('on handler custom context', {
+      target,
+      event,
+      context: this,
+      check: this === customContext
+    });
+  }, customContext);
+
+  testBlock.once('click', function(target, event) {
+    console.log('once handler custom context', {
+      target,
+      event,
+      context: this,
+      check: this === customContext
+    });
+  }, customContext);
+
+  return testBlock;
+}
+
+function test64() {
+  // * 64) View on context * //
+
+  beforeEach();
+
+  const element = document.querySelector('.test');
+
+  class MyView extends View {
+    constructor(options) {
+      super(options);
+
+      this.element.innerHTML = `<span class="${this.elem('title')}">content</span>`;
+
+      this.on('click', function(target, event) {
+        console.log('on handler', {
+          target,
+          event,
+          context: this,
+          check: this === myView
+        });
+      });
+
+      this.once('click', function(target, event) {
+        console.log('once handler', {
+          target,
+          event,
+          context: this,
+          check: this === myView
+        });
+      });
+
+      this.on('title', 'click', function(target, event) {
+        console.log('on elem handler', {
+          target,
+          event,
+          context: this,
+          check: this === myView
+        });
+      });
+
+      this.once('title', 'click', function(target, event) {
+        console.log('once elem handler', {
+          target,
+          event,
+          context: this,
+          check: this === myView
+        });
+      });
+
+      this.delegate('title', 'click', function(target, event) {
+        console.log('delegate handler', {
+          target,
+          event,
+          context: this,
+          check: this === myView
+        });
+      });
+    }
+  }
+
+  const myView = new MyView({ element });
 
   return myView;
 }
