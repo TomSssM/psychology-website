@@ -4,6 +4,8 @@ You should write the documentation based on the tests
 
 ## TODO
 
+_Yeah it seems like our MVC framework is a real pirate code of concealment by complexity_
+
 ### Dynamic Rendering
 
 We should create dynamic rendering by making View define and Block use the STATIC onBlock and onElem properties and these properties get called with ctx instance that has View template data passed from outside but these properties don't get called with a real View instance but View gets instantiated only on client when it hydrates
@@ -29,3 +31,23 @@ Note: maybe we should pass the bemjson params as ctx.js({ key: value }) and if w
 The sole job of the Controller is to create the Model somehow (either it gets from the server side code or it calls model.fetch itself) and then render the View by passing a model to it (render html of the View server side and init the View client side or do both at once if client side) and all the rest of the application logic is handled by all the subviews and their communication with the models
 
 Now when the models are created server side they are assigned id's. Then these id's become the bemjson params of the Views and all this stuff is transfered client side where models get instantiated with the same id's and Views get the same id's of their models therefore ensuring the same Views end up with the same Model instances
+
+### Event listeners revision
+
+The on + off / dispatch (or trigger) API of Blocks remains the same. In terms of View it seems like we need to have bindTo / dispatch methods for native DOM events and on + off / trigger methods for View event listener MVC events. Just think about it our whole current delegate + on + off / dispatch API can be reduced to just bindTo([element], eventName, listener) / dispatch(...) methods and then we can create the on + off / trigger methods to handle a scenario where there are 2 blocks on the same DOM element and we want to listen to and trigger the events of one block but not the other
+
+Note that judging from BEM liveBindTo(element, handler, context) = delegate(element, handler, context) and bindTo(element, handler, context) = find(element).on(handler, context). Naming may be changed here from BEM not to break someone's brain
+
+### Block name in inheritance
+
+If one View extends another then the name of the block and therefore the figuring out of the subsequent onElem methods to be called is to be derived from the first View class in the inheritance chain that specifies explicitly its block name. For this reason we should make static block = ... declaration a compulsory one
+
+### Little ideas
+
+#### Block useful instance helper methods
+
+Create for Block class useful instance helpers like this.rect() this.px(...) this.append(...) this.prepend(...) this.before(...) this.after(...) this.content(...)
+
+### Accessing the document
+
+Any View instance should have a useful this.doc getter that would return window.document element
