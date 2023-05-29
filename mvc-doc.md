@@ -34,13 +34,22 @@ Now when the models are created server side they are assigned id's. Then these i
 
 ### Event listeners revision
 
-The on + off / dispatch (or trigger) API of Blocks remains the same. In terms of View it seems like we need to have bindTo / dispatch methods for native DOM events and on + off / trigger methods for View event listener MVC events. Just think about it our whole current delegate + on + off / dispatch API can be reduced to just bindTo([element], eventName, listener) / dispatch(...) methods and then we can create the on + off / trigger methods to handle a scenario where there are 2 blocks on the same DOM element and we want to listen to and trigger the events of one block but not the other
+The on + off / dispatch (better rename to dispatch from trigger) API of Blocks remains the same. In terms of View it seems like we need to have bindTo / dispatch methods for native DOM events and on + off / trigger methods for View event listener MVC events. Just think about it our whole current delegate + on + off / dispatch API can be reduced to just bindTo([element], eventName, listener) / dispatch(...) methods and then we can create the on + off / trigger methods to handle a scenario where there are 2 blocks on the same DOM element and we want to listen to and trigger the events of one block but not the other
 
 Note that judging from BEM liveBindTo(element, handler, context) = delegate(element, handler, context) and bindTo(element, handler, context) = find(element).on(handler, context). Naming may be extended here not to break someone's brain like delegate should be an alias for liveBindTo
+
+As a result we get the API:
+Block.on / .off / .dispatch
+View.bindTo / .liveBindTo / .delegate / .dispatch / .on / .off / .trigger
 
 ### Block name in inheritance
 
 If one View extends another then the name of the block and therefore the figuring out of the subsequent onElem methods to be called is to be derived from the first View class in the inheritance chain that specifies explicitly its block name. For this reason we should make static block = ... declaration a compulsory one
+
+### Accessing onBlock / onElem in inheritance
+
+These methods when defined as static properties onBlock = ... override the setter so you should get the onBlock / onElem of the parent View by traversing prototype tree until this === View:
+Object.getPrototypeOf(ExtendingView) === BaseView > Object.getPrototypeOf(BaseView) === View
 
 ### Little ideas
 

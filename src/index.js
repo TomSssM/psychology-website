@@ -483,34 +483,11 @@ class Block {
 class View extends Block {
   static block = null;
 
-  static bemjson = {
-    onBlock() {
-      /* empty */
-    },
-    onElem: {}
-  };
-
-  static get onBlock() {
-    return this.bemjson.onBlock;
+  static onBlock() {
+    return {};
   }
 
-  static set onBlock(value) {
-    if (typeof value !== 'function') {
-      return;
-    }
-
-    this.bemjson.onBlock = value;
-  }
-
-  static get onElem() {
-    return this.bemjson.onElem;
-  }
-
-  static set onElem(data) {
-    Object.assign(this.bemjson.onElem, ObjectUtils.filter(
-      data, (value) => typeof value === 'function'
-    ));
-  }
+  static onElem = {};
 
   static init() {
     const block = BlockUtils.getBlockName(this);
@@ -520,6 +497,8 @@ class View extends Block {
     });
   }
 
+  onSetMod = {};
+
   constructor({element}) {
     super({element});
 
@@ -528,18 +507,21 @@ class View extends Block {
       modHanders: {},
       setters: {}
     });
-  }
 
-  get onSetMod() {
-    return this.state.modHanders;
-  }
+    Object.defineProperty(this, 'onSetMod', {
+      configurable: false,
+      enumerable: false,
+      get() {
+        return this.state.modHanders;
+      },
+      set(modHanders) {
+        if (!ObjectUtils.isObject(modHanders)) {
+          return;
+        }
 
-  set onSetMod(modHanders) {
-    if (!ObjectUtils.isObject(modHanders)) {
-      return;
-    }
-
-    Object.assign(this.onSetMod, modHanders);
+        Object.assign(this.onSetMod, modHanders);
+      }
+    });
   }
 
   get setters() {
@@ -1648,18 +1630,28 @@ function test43() {
   beforeEach();
 
   class MyView extends View {
-    onSetMod = {
-      visible: function(value) {
-        console.log('triggered visible', { value, current: this.getMod('visible') });
-      }
-    };
+    static block = 'my-view';
+
+    constructor(options) {
+      super(options);
+
+      this.onSetMod = {
+        visible: function(value) {
+          console.log('triggered visible', { value, current: this.getMod('visible') });
+        }
+      };
+    }
   }
 
   class MyOtherView extends MyView {
-    onSetMod = {
-      open: function(value) {
-        console.log('triggered open', { value, current: this.getMod('open') });
-      }
+    constructor(options) {
+      super(options);
+
+      this.onSetMod = {
+        open: function(value) {
+          console.log('triggered open', { value, current: this.getMod('open') });
+        }
+      };
     }
   }
 
