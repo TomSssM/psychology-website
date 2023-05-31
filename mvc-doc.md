@@ -51,6 +51,10 @@ If one View extends another then the name of the block and therefore the figurin
 These methods when defined as static properties onBlock = ... override the setter so you should get the onBlock / onElem of the parent View by traversing prototype tree until this === View:
 Object.getPrototypeOf(ExtendingView) === BaseView > Object.getPrototypeOf(BaseView) === View
 
+### Integrational note
+
+The inheritance of one View from another may be also manifested in definiing the bemjson for elements undefined in the base View. Therefore the purpose of client side routing may be confined to having base Views define the logic for which elements to update with what undefined elements and the extending Views defining these undefined elements as well as being used as a final View for the controller
+
 ### Little ideas
 
 #### Block useful instance helper methods
