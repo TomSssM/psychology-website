@@ -68,12 +68,14 @@ class StringUtils {
 
     for (const character of value) {
       if (this.isUpperCase(character)) {
-        result += `${this.toLowerCase(character)}-`;
+        result += `-${this.toLowerCase(character)}`;
+      } else {
+        result += character;
       }
     }
 
-    if (result.endsWith('-')) {
-      result = result.slice(0, -1);
+    if (result.startsWith('-')) {
+      result = result.slice(1);
     }
 
     return result;
@@ -104,6 +106,10 @@ class ObjectUtils {
     return Object.keys(obj).filter((keyName) => !RESERVED_KEYS.includes(keyName));
   }
 
+  static getEntries(obj) {
+    return Object.entries(obj);
+  }
+
   static getKeysCount(obj) {
     return this.getKeys(obj).length;
   }
@@ -113,7 +119,7 @@ class ObjectUtils {
       return false;
     }
 
-    return this.isLeftIntersect(obj1, obj2);
+    return this.includesLeft(obj1, obj2);
   }
 
   static includesLeft(obj1, obj2) {
@@ -144,22 +150,47 @@ class ObjectUtils {
     });
   }
 
-  static filter(obj, callback) {
-    return Object.fromEntries(Object.entries(obj).filter(
-      ([keyName, keyValue], index) => callback(keyValue, keyName, index)
+  static filter(obj, callback, context) {
+    return Object.fromEntries(this.getEntries(obj).filter(
+      function([keyName, keyValue], index) {
+        return callback.call(this, keyValue, keyName, index);
+      },
+      context
     ));
   }
 
-  static map(obj, callback) {
-    return Object.fromEntries(Object.entries(obj).map(
-      ([keyName, keyValue], index) => [keyName, callback(keyValue, keyName, index)]
+  static map(obj, callback, context) {
+    return Object.fromEntries(this.getEntries(obj).map(
+      function ([keyName, keyValue], index) {
+        return [keyName, callback.call(this, keyValue, keyName, index)];
+      },
+      context
     ));
   }
 
-  static mapKeys(obj, callback) {
-    return Object.fromEntries(Object.entries(obj).map(
-      ([keyName, keyValue], index) => [callback(keyName, keyValue, index), keyValue]
+  static mapKeys(obj, callback, context) {
+    return Object.fromEntries(this.getEntries(obj).map(
+      function ([keyName, keyValue], index) {
+        return [callback.call(this, keyName, keyValue, index), keyValue];
+      },
+      context
     ));
+  }
+
+  static forEach(obj, callback, context) {
+    return this.forEachKey(obj, callback, context);
+  }
+
+  static forEachKey(obj, callback, context) {
+    this.getEntries(obj).forEach(function([keyName, keyValue]) {
+      callback.call(this, keyName, keyValue);
+    }, context);
+  }
+
+  static forEachValue(obj, callback, context) {
+    this.getEntries(obj).forEach(function([keyName, keyValue]) {
+      callback.call(this, keyValue, keyName);
+    }, context);
   }
 }
 
@@ -217,10 +248,39 @@ class BlockUtils {
 
     return result;
   }
+
+  static getModArgs(args) {
+    if (args.length === 0) {
+      return {
+        modName: null,
+        modValue: false
+      };
+    }
+
+    let modName;
+    let modValue;
+
+    modName = args[0];
+
+    if (args.length === 1) {
+      modValue = true;
+    } else {
+      modValue = args[1];
+    }
+
+    if (!modValue) {
+      modValue = false;
+    }
+
+    return {
+      modName,
+      modValue
+    };
+  }
 }
 
 class ViewUtils {
-  static triggerModHandler(view, modName, modValue = true) {
+  static triggerModHandler(view, modName, modValue) {
     if (!view.onSetMod) {
       return;
     }
@@ -272,7 +332,7 @@ class Block {
   }
 
   get params() {
-    return this.params;
+    return this.getParams();
   }
 
   elem(element = '', className = false) {
@@ -312,39 +372,44 @@ class Block {
       this.setMod(modName, false);
     });
 
-    Object.entries(mods).forEach(([modName, modValue]) => {
+    ObjectUtils.forEach(mods, function (modName, modValue) {
       this.setMod(modName, modValue);
-    });
+    }, this);
   }
 
-  setMod(modName, modValue = true) {
+  setMod(...args) {
+    const {modName, modValue} = BlockUtils.getModArgs(args);
     const {block, elementName, mods} = BlockUtils.parseClassName(this.block, this.element);
 
-    if (!block) {
+    if (!block || !modName) {
       return;
     }
 
-    if (modValue === false) {
-      mods.forEach((mod) => {
-        if (mod.modName !== modName) {
-          return;
-        }
-        this.element.classList.remove(mod.className);
-      });
-    } else if (modValue) {
-      let newClassName = elementName ? this.elem(elementName) : this.block;
-
-      newClassName = `${newClassName}_${modName}`;
-
-      if (modValue !== true) {
-        newClassName = `${newClassName}_${modValue}`;
+    mods.forEach((mod) => {
+      if (mod.modName !== modName) {
+        return;
       }
 
-      this.element.classList.add(newClassName);
+      this.element.classList.remove(mod.className);
+    });
+
+    if (!modValue) {
+      return;
     }
+
+    let newClassName = elementName ? this.elem(elementName) : this.block;
+
+    newClassName = `${newClassName}_${modName}`;
+
+    if (modValue !== true) {
+      newClassName = `${newClassName}_${modValue}`;
+    }
+
+    this.element.classList.add(newClassName);
   }
 
-  toggleMod(modName, modValue) {
+  toggleMod(...args) {
+    const {modName, modValue} = BlockUtils.getModArgs(args);
     const hasMod = Boolean(this.getMod(modName));
 
     if (hasMod) {
@@ -418,14 +483,10 @@ class Block {
     }
 
     events[eventName] = listeners.filter(({
-      eventName: listenerEventName,
       handler: listenerHandler,
       boundHandler
     }) => {
-      if (
-        listenerEventName === eventName && (
-          listenerHandler === handler || boundHandler === handler)
-      ) {
+      if (listenerHandler === handler || boundHandler === handler) {
         this.element.removeEventListener(eventName, boundHandler);
 
         return false;
@@ -467,16 +528,17 @@ class Block {
       return;
     }
 
-    Object.entries(events).forEach(([eventName, listeners]) => {
+    ObjectUtils.forEach(events, function(eventName, listeners) {
       listeners.forEach(({boundHandler}) => {
         this.element.removeEventListener(eventName, boundHandler);
       });
-    });
+    }, this);
   }
 
   remove() {
     this.destruct();
     this.element.remove();
+    this.state.element = null;
   }
 }
 
@@ -627,11 +689,19 @@ class View extends Block {
   }
 
   elemify(targetElement) {
+    if (!targetElement) {
+      return null;
+    }
+
     if (targetElement instanceof Block) {
       return targetElement;
     }
 
-    const block = new Block({block: this.block, element: targetElement});
+    if (!(targetElement instanceof Element)) {
+      return null;
+    }
+
+    const block = new Block({ block: this.block, element: targetElement });
 
     block.state.listeners = this.state.listeners;
 
@@ -698,40 +768,42 @@ class View extends Block {
   findBlock() {
   }
 
+  getElemMods(targetElement) {
+    return this.find(targetElement).getMods();
+  }
+
   getElemMod(targetElement, modName) {
     return this.find(targetElement).getMod(modName);
   }
 
   setMods(mods) {
-    Object.entries(mods).forEach(([modName, modValue]) => {
-      ViewUtils.triggerModHandler(this, modName, modValue);
-    });
-
     super.setMods(mods);
+  }
+
+  setMod(...args) {
+    const {modName, modValue} = BlockUtils.getModArgs(args);
+
+    ViewUtils.triggerModHandler(this, modName, modValue);
+
+    super.setMod(modName, modValue);
   }
 
   setElemMods(targetElement, mods) {
     this.find(targetElement).setMods(mods);
   }
 
-  setMod(modName, modValue) {
-    ViewUtils.triggerModHandler(this, modName, modValue);
-
-    super.setMod(modName, modValue);
+  setElemMod(targetElement, ...args) {
+    this.find(targetElement).setMod(...args);
   }
 
-  setElemMod(targetElement, modName, modValue) {
-    this.find(targetElement).setMod(modName, modValue);
-  }
-
-  toggleElemMod(targetElement, modName, modValue) {
-    this.find(targetElement).toggleMod(modName, modValue);
+  toggleElemMod(targetElement, ...args) {
+    this.find(targetElement).toggleMod(...args);
   }
 
   destruct() {
     Array.from(this.state.listeners.entries()).forEach(([element, events]) => {
-      Object.entries(events).forEach(([eventName, listeners]) => {
-        listeners.forEach(({boundHandler}) => {
+      ObjectUtils.forEach(events, (eventName, listeners) => {
+        listeners.forEach(({ boundHandler }) => {
           element.removeEventListener(eventName, boundHandler);
         });
       });
@@ -740,9 +812,14 @@ class View extends Block {
     });
   }
 
-  remove() {
-    this.destruct();
-    this.state.element.remove();
+  remove(...args) {
+    if (args.length === 0) {
+      super.remove();
+    } else {
+      const [targetElement] = args;
+
+      this.find(targetElement).remove();
+    }
   }
 }
 

@@ -84,7 +84,7 @@ function test5() {
 
   const element = document.querySelector('.test');
 
-  return new MyBlock({ block: 'cool', element });
+  return new MyBlock({ block: 'cool', element }).block;
 }
 
 function test6() {
@@ -98,7 +98,34 @@ function test6() {
 
   const element = document.querySelector('.test');
 
-  return new MyBlock({ element });
+  return new MyBlock({ element }).block;
+}
+
+function test6_A() {
+  // * 6_A) Block explicit constructor name inheritance * //
+
+  beforeEach();
+
+  class MyBlock extends Block {
+    static block = 'cool-two';
+  }
+
+  class MyOtherBlock extends MyBlock {
+    static block = 'my-other-block';
+  }
+
+  class MyImplicitOtherBlock extends MyBlock {
+  }
+
+  const element = document.querySelector('.test');
+
+  const explicit = new MyOtherBlock({ element }).block;
+  const implicit = new MyImplicitOtherBlock({ element }).block;
+
+  return {
+    explicit,
+    implicit
+  };
 }
 
 function test7() {
@@ -111,7 +138,23 @@ function test7() {
 
   const element = document.querySelector('.test');
 
-  return new MyBlock({ element });
+  return new MyBlock({ element }).block;
+}
+
+function test7_A() {
+  // * 7_A) Block implicit name inheritance * //
+
+  beforeEach();
+
+  class MyBlock extends Block {
+  }
+
+  class MyOtherBlock extends MyBlock {
+  }
+
+  const element = document.querySelector('.test');
+
+  return new MyOtherBlock({ element }).block;
 }
 
 function test8() {
@@ -125,7 +168,34 @@ function test8() {
 
   const element = document.querySelector('.test');
 
-  return new MyView({ element });
+  return new MyView({ element }).block;
+}
+
+function test8_A() {
+  // * 8_A) View explicit constructor name inheritance * //
+
+  beforeEach();
+
+  class MyView extends View {
+    static block = 'cool-view';
+  }
+
+  class MyOtherView extends MyView {
+    static block = 'my-other-view';
+  }
+
+  class MyImplicitOtherView extends MyView {
+  }
+
+  const element = document.querySelector('.test');
+
+  const explicit =  new MyOtherView({ element }).block;
+  const implicit = new MyImplicitOtherView({ element }).block;
+
+  return {
+    explicit,
+    implicit
+  };
 }
 
 function test9() {
@@ -138,7 +208,23 @@ function test9() {
 
   const element = document.querySelector('.test');
 
-  return new MyView({ element });
+  return new MyView({ element }).block;
+}
+
+function test9_A() {
+  // * 9_A) View implicit name inheritance * //
+
+  beforeEach();
+
+  class MyView extends View {
+  }
+
+  class MyOtherView extends MyView {
+  }
+
+  const element = document.querySelector('.test');
+
+  return new MyOtherView({ element }).block;
 }
 
 function test10() {
@@ -376,7 +462,9 @@ function test24() {
 
   testBlock.setParams({
     one: 1,
-    two: 2
+    two: 2,
+    three: null,
+    four: undefined
   });
 
   const secondCase = {
@@ -440,7 +528,9 @@ function test26() {
 
   myView.setParams({
     one: 1,
-    two: 2
+    two: 2,
+    three: null,
+    four: undefined
   });
 
   const secondCase = {
@@ -557,6 +647,7 @@ function test32() {
     open: 'yes',
     expanded: true,
     size: 12,
+    zero: 0,
     destructing: false,
     empty: undefined,
     whatever: null
@@ -564,7 +655,8 @@ function test32() {
 
   const firstCase = {
     all: testBlock.getMods(),
-    one: testBlock.getMod('open')
+    one: testBlock.getMod('open'),
+    cls: testBlock.element.classList.toString()
   };
 
   testBlock.setMods({
@@ -576,7 +668,8 @@ function test32() {
   const secondCase = {
     all: testBlock.getMods(),
     one: testBlock.getMod('visible'),
-    another: testBlock.getMod('open')
+    another: testBlock.getMod('open'),
+    cls: testBlock.element.classList.toString()
   };
 
   return { firstCase, secondCase };
@@ -594,13 +687,17 @@ function test33() {
   testBlock.setMod('open');
   testBlock.setMod('visible', true);
   testBlock.setMod('size', 'xs');
+  testBlock.setMod('zero', 0);
 
   const firstCase = {
     all: testBlock.getMods(),
     one: testBlock.getMod('size')
   };
 
-  testBlock.setMod('size', null);
+  testBlock.setMod('open', undefined);
+  testBlock.setMod('visible', false);
+  testBlock.setMod('size', 0);
+  testBlock.setMod('zero', null);
 
   const secondCase = {
     all: testBlock.getMods(),
@@ -626,6 +723,7 @@ function test34() {
     open: 'yes',
     expanded: true,
     size: 12,
+    zero: 0,
     destructing: false,
     empty: undefined,
     whatever: null
@@ -633,7 +731,8 @@ function test34() {
 
   const firstCase = {
     all: myView.getMods(),
-    one: myView.getMod('open')
+    one: myView.getMod('open'),
+    cls: myView.element.classList.toString()
   };
 
   myView.setMods({
@@ -645,7 +744,8 @@ function test34() {
   const secondCase = {
     all: myView.getMods(),
     one: myView.getMod('visible'),
-    another: myView.getMod('open')
+    another: myView.getMod('open'),
+    cls: myView.element.classList.toString()
   };
 
   return { firstCase, secondCase };
@@ -666,13 +766,17 @@ function test35() {
   myView.setMod('open');
   myView.setMod('visible', true);
   myView.setMod('size', 'xs');
+  myView.setMod('zero', 0);
 
   const firstCase = {
     all: myView.getMods(),
     one: myView.getMod('size')
   };
 
-  myView.setMod('size', null);
+  myView.setMod('open', undefined);
+  myView.setMod('visible', false);
+  myView.setMod('size', 0);
+  myView.setMod('zero', null);
 
   const secondCase = {
     all: myView.getMods(),
@@ -692,16 +796,19 @@ function test36() {
   const testBlock = new Block({ element });
 
   testBlock.toggleMod('open');
+  testBlock.toggleMod('closed', null);
 
-  const firstCase = testBlock.getMod('open');
+  const firstCase = testBlock.getMods();
 
   testBlock.toggleMod('open');
+  testBlock.toggleMod('closed', undefined);
 
-  const secondCase = testBlock.getMod('open');
+  const secondCase = testBlock.getMods();
 
   testBlock.toggleMod('open', 'yes');
+  testBlock.toggleMod('closed', 0);
 
-  const thirdCase = testBlock.getMod('open');
+  const thirdCase = testBlock.getMods();
 
   return { firstCase, secondCase, thirdCase };
 }
@@ -719,16 +826,19 @@ function test37() {
   const myView = new MyView({ element });
 
   myView.toggleMod('open');
+  myView.toggleMod('closed', null);
 
-  const firstCase = myView.getMod('open');
+  const firstCase = myView.getMods();
 
   myView.toggleMod('open');
+  myView.toggleMod('closed', undefined);
 
-  const secondCase = myView.getMod('open');
+  const secondCase = myView.getMods();
 
   myView.toggleMod('open', 'yes');
+  myView.toggleMod('closed', 0);
 
-  const thirdCase = myView.getMod('open');
+  const thirdCase = myView.getMods();
 
   return { firstCase, secondCase, thirdCase };
 }
@@ -908,7 +1018,7 @@ function test43() {
 
   const myOtherView = new MyOtherView({ element });
 
-  myOtherView.setMods({ visible: '1', open: '2' });
+  myOtherView.setMods({ visible: '1', open: '1' });
   myOtherView.setMod('visible', 2);
   myOtherView.setMod('open', 2);
   myOtherView.toggleMod('visible');
@@ -1054,7 +1164,19 @@ function test46() {
 function test47() {
   // * 47) View doesn't cause memory leaks * //
 
-  // * WARN: add every instance of new Block to WeakSet and inspect
+  // * WARN: inspect via devtools and WeakSet here is the flow:
+  //   create window.TESTSET = new WeakSet(); and in Block constructor do window.TESTSET.add(this);
+  //   let v = test47();
+  //   check should have references
+  //   TESTSET;
+  //   click garbage collect and wait a second
+  //   check should have no references
+  //   TESTSET;
+  //   v.remove();
+  //   v = undefined;
+  //   click garbage collect and wait a second
+  //   check should have no references
+  //   TESTSET;
 
   beforeEach();
 
@@ -1073,6 +1195,8 @@ function test47() {
   myView.find('title');
   myView.find('title');
   myView.find('title').on('click', () => {});
+
+  return myView;
 }
 
 function test48() {
@@ -1101,7 +1225,7 @@ function test48() {
     firstCase,
     secondCase,
     thirdCase,
-    instanceCheck: [firstCase, secondCase, thirdCase].every(
+    instanceCheck: [firstCase, thirdCase].every(
       (value) => value instanceof Block
     )
   }
@@ -1248,11 +1372,11 @@ function test52() {
   const testBlock = new Block({ element });
 
   function boundClick(target, event) {
-    console.log('block bound click', { target, event });
+    console.log('block bound click', { target, event, context: this });
   }
 
   testBlock.on('click', (target, event) => {
-    console.log('block click', { target, event });
+    console.log('block click', { target, event, context: this  });
   });
 
   testBlock.on('click', boundClick, testBlock);
