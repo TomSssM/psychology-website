@@ -101,8 +101,8 @@ function test6() {
   return new MyBlock({ element }).block;
 }
 
-function test6_A() {
-  // * 6_A) Block explicit constructor name inheritance * //
+function test7() {
+  // * 7) Block explicit constructor name inheritance * //
 
   beforeEach();
 
@@ -128,8 +128,8 @@ function test6_A() {
   };
 }
 
-function test7() {
-  // * 7) Block implicit name * //
+function test8() {
+  // * 8) Block implicit name * //
 
   beforeEach();
 
@@ -141,8 +141,8 @@ function test7() {
   return new MyBlock({ element }).block;
 }
 
-function test7_A() {
-  // * 7_A) Block implicit name inheritance * //
+function test9() {
+  // * 9) Block implicit name inheritance * //
 
   beforeEach();
 
@@ -157,8 +157,8 @@ function test7_A() {
   return new MyOtherBlock({ element }).block;
 }
 
-function test8() {
-  // * 8) View explicit constructor name * //
+function test10() {
+  // * 10) View explicit constructor name * //
 
   beforeEach();
 
@@ -171,8 +171,8 @@ function test8() {
   return new MyView({ element }).block;
 }
 
-function test8_A() {
-  // * 8_A) View explicit constructor name inheritance * //
+function test11() {
+  // * 11) View explicit constructor name inheritance * //
 
   beforeEach();
 
@@ -198,8 +198,8 @@ function test8_A() {
   };
 }
 
-function test9() {
-  // * 9) View implicit name * //
+function test12() {
+  // * 12) View implicit name * //
 
   beforeEach();
 
@@ -211,8 +211,8 @@ function test9() {
   return new MyView({ element }).block;
 }
 
-function test9_A() {
-  // * 9_A) View implicit name inheritance * //
+function test13() {
+  // * 13) View implicit name inheritance * //
 
   beforeEach();
 
@@ -227,8 +227,8 @@ function test9_A() {
   return new MyOtherView({ element }).block;
 }
 
-function test10() {
-  // * 10) Block block getter * //
+function test14() {
+  // * 14) Block block getter * //
 
   beforeEach();
 
@@ -239,8 +239,8 @@ function test10() {
   return testBlock.block;
 }
 
-function test11() {
-  // * 11) View block getter * //
+function test15() {
+  // * 15) View block getter * //
 
   beforeEach();
 
@@ -254,8 +254,8 @@ function test11() {
   return myView.block;
 }
 
-function test12() {
-  // * 12) Block element getter * //
+function test16() {
+  // * 16) Block element getter * //
 
   beforeEach();
 
@@ -266,8 +266,8 @@ function test12() {
   return testBlock.element;
 }
 
-function test13() {
-  // * 13) View element getter * //
+function test17() {
+  // * 17) View element getter * //
 
   beforeEach();
 
@@ -281,8 +281,8 @@ function test13() {
   return myView.element;
 }
 
-function test14() {
-  // * 14) Block elem method * //
+function test18() {
+  // * 18) Block elem method * //
 
   beforeEach();
 
@@ -299,8 +299,8 @@ function test14() {
   return results;
 }
 
-function test15() {
-  // * 15) View elem method * //
+function test19() {
+  // * 19) View elem method * //
 
   beforeEach();
 
@@ -320,8 +320,8 @@ function test15() {
   return results;
 }
 
-function test16() {
-  // * 16) Block getName method * //
+function test20() {
+  // * 20) Block getName method * //
 
   beforeEach();
 
@@ -332,8 +332,8 @@ function test16() {
   return testBlock.getName();
 }
 
-function test17() {
-  // * 17) View getName method * //
+function test21() {
+  // * 21) View getName method * //
 
   beforeEach();
 
@@ -347,8 +347,8 @@ function test17() {
   return myView.getName();
 }
 
-function test18() {
-  // * 18) Block getParams method * //
+function test22() {
+  // * 22) Block getParams method * //
 
   beforeEach();
 
@@ -359,8 +359,8 @@ function test18() {
   return testBlock.getParams();
 }
 
-function test19() {
-  // * 19) Block getParam method * //
+function test23() {
+  // * 23) Block getParam method * //
 
   beforeEach();
 
@@ -376,8 +376,8 @@ function test19() {
   return result;
 }
 
-function test20() {
-  // * 20) Block params getter * //
+function test24() {
+  // * 24) Block params getter * //
 
   beforeEach();
 
@@ -388,8 +388,8 @@ function test20() {
   return testBlock.params;
 }
 
-function test21() {
-  // * 21) View getParams method * //
+function test25() {
+  // * 25) View getParams method * //
 
   beforeEach();
 
@@ -403,8 +403,8 @@ function test21() {
   return myView.getParams();
 }
 
-function test22() {
-  // * 22) View getParam method * //
+function test26() {
+  // * 26) View getParam method * //
 
   beforeEach();
 
@@ -423,8 +423,8 @@ function test22() {
   return result;
 }
 
-function test23() {
-  // * 23) View params getter * //
+function test27() {
+  // * 27) View params getter * //
 
   beforeEach();
 
@@ -438,8 +438,8 @@ function test23() {
   return myView.params;
 }
 
-function test24() {
-  // * 24) Block setParams method * //
+function test28() {
+  // * 28) Block setParams method * //
 
   beforeEach();
 
@@ -475,8 +475,8 @@ function test24() {
   return { firstCase, secondCase };
 }
 
-function test25() {
-  // * 25) Block setParam method * //
+function test29() {
+  // * 29) Block setParam method * //
 
   beforeEach();
 
@@ -501,8 +501,8 @@ function test25() {
   return { firstCase, secondCase };
 }
 
-function test26() {
-  // * 26) View setParams method * //
+function test30() {
+  // * 30) View setParams method * //
 
   beforeEach();
 
@@ -541,8 +541,8 @@ function test26() {
   return { firstCase, secondCase };
 }
 
-function test27() {
-  // * 27) View setParam method * //
+function test31() {
+  // * 31) View setParam method * //
 
   class MyView extends View {
   }
@@ -570,8 +570,8 @@ function test27() {
   return { firstCase, secondCase };
 }
 
-function test28() {
-  // * 28) Block getMods method * //
+function test32() {
+  // * 32) Block getMods method * //
 
   beforeEach();
 
@@ -582,8 +582,8 @@ function test28() {
   return testBlock.getMods();
 }
 
-function test29() {
-  // * 29) Block getMod method * //
+function test33() {
+  // * 33) Block getMod method * //
 
   beforeEach();
 
@@ -599,8 +599,8 @@ function test29() {
   return result;
 }
 
-function test30() {
-  // * 30) View getMods method * //
+function test34() {
+  // * 34) View getMods method * //
 
   beforeEach();
 
@@ -614,8 +614,8 @@ function test30() {
   return myView.getMods();
 }
 
-function test31() {
-  // * 31) View getMod method * //
+function test35() {
+  // * 35) View getMod method * //
 
   beforeEach();
 
@@ -634,8 +634,8 @@ function test31() {
   return result;
 }
 
-function test32() {
-  // * 32) Block setMods method * //
+function test36() {
+  // * 36) Block setMods method * //
 
   beforeEach();
 
@@ -675,8 +675,8 @@ function test32() {
   return { firstCase, secondCase };
 }
 
-function test33() {
-  // * 33) Block setMod method * //
+function test37() {
+  // * 37) Block setMod method * //
 
   beforeEach();
 
@@ -707,8 +707,8 @@ function test33() {
   return { firstCase, secondCase };
 }
 
-function test34() {
-  // * 34) View setMods method * //
+function test38() {
+  // * 38) View setMods method * //
 
   beforeEach();
 
@@ -751,8 +751,8 @@ function test34() {
   return { firstCase, secondCase };
 }
 
-function test35() {
-  // * 35) View setMod method * //
+function test39() {
+  // * 39) View setMod method * //
 
   beforeEach();
 
@@ -786,8 +786,8 @@ function test35() {
   return { firstCase, secondCase };
 }
 
-function test36() {
-  // * 36) Block toggleMod method * //
+function test40() {
+  // * 40) Block toggleMod method * //
 
   beforeEach();
 
@@ -813,8 +813,8 @@ function test36() {
   return { firstCase, secondCase, thirdCase };
 }
 
-function test37() {
-  // * 37) View toggleMod method * //
+function test41() {
+  // * 41) View toggleMod method * //
 
   beforeEach();
 
@@ -843,8 +843,8 @@ function test37() {
   return { firstCase, secondCase, thirdCase };
 }
 
-function test38() {
-  // * 38) View getElemMods method * //
+function test42() {
+  // * 42) View getElemMods method * //
 
   beforeEach();
 
@@ -858,8 +858,8 @@ function test38() {
   return myView.getElemMods('title');
 }
 
-function test39() {
-  // * 39) View getElemMod method * //
+function test43() {
+  // * 43) View getElemMod method * //
 
   beforeEach();
 
@@ -878,8 +878,8 @@ function test39() {
   return result;
 }
 
-function test40() {
-  // * 40) View setElemMods method * //
+function test44() {
+  // * 44) View setElemMods method * //
 
   beforeEach();
 
@@ -921,8 +921,8 @@ function test40() {
   return { firstCase, secondCase };
 }
 
-function test41() {
-  // * 41) View setElemMod method * //
+function test45() {
+  // * 45) View setElemMod method * //
 
   beforeEach();
 
@@ -954,8 +954,8 @@ function test41() {
   return { firstCase, secondCase };
 }
 
-function test42() {
-  // * 42) View toggleElemMod method * //
+function test46() {
+  // * 46) View toggleElemMod method * //
 
   beforeEach();
 
@@ -983,8 +983,8 @@ function test42() {
   return { firstCase, secondCase, thirdCase };
 }
 
-function test43() {
-  // * 43) View triggers onSetMod * //
+function test47() {
+  // * 47) View triggers onSetMod * //
 
   beforeEach();
 
@@ -1027,8 +1027,8 @@ function test43() {
   myOtherView.toggleMod('open');
 }
 
-function test44() {
-  // * 44) Block removes element and unbinds from it * //
+function test48() {
+  // * 48) Block removes element and unbinds from it * //
 
   beforeEach();
 
@@ -1057,8 +1057,8 @@ function test44() {
   return testBlock;
 }
 
-function test45() {
-  // * 45) View removes element and unbinds from it * //
+function test49() {
+  // * 49) View removes element and unbinds from it * //
 
   beforeEach();
 
@@ -1109,8 +1109,8 @@ function test45() {
   return myView;
 }
 
-function test46() {
-  // * 46) View removes and unbinds blocks * //
+function test50() {
+  // * 50) View removes and unbinds blocks * //
 
   beforeEach();
 
@@ -1161,8 +1161,8 @@ function test46() {
   return myView;
 }
 
-function test47() {
-  // * 47) View doesn't cause memory leaks * //
+function test51() {
+  // * 51) View doesn't cause memory leaks * //
 
   // * WARN: inspect via devtools and WeakSet here is the flow:
   //   create window.TESTSET = new WeakSet(); and in Block constructor do window.TESTSET.add(this);
@@ -1199,8 +1199,8 @@ function test47() {
   return myView;
 }
 
-function test48() {
-  // * 48) View elemify method * //
+function test52() {
+  // * 52) View elemify method * //
 
   beforeEach();
 
@@ -1233,8 +1233,8 @@ function test48() {
   return result;
 }
 
-function test49() {
-  // * 49) View find method * //
+function test53() {
+  // * 53) View find method * //
 
   beforeEach();
 
@@ -1281,8 +1281,8 @@ function test49() {
   return result;
 }
 
-function test50() {
-  // * 50) View findAll method * //
+function test54() {
+  // * 54) View findAll method * //
 
   beforeEach();
 
@@ -1329,8 +1329,8 @@ function test50() {
   return result;
 }
 
-function test51() {
-  // * 51) View findOn method * //
+function test55() {
+  // * 55) View findOn method * //
 
   beforeEach();
 
@@ -1362,8 +1362,8 @@ function test51() {
   return result;
 }
 
-function test52() {
-  // * 52) Block on method * //
+function test56() {
+  // * 56) Block on method * //
 
   beforeEach();
 
@@ -1371,21 +1371,25 @@ function test52() {
 
   const testBlock = new Block({ element });
 
-  function boundClick(target, event) {
-    console.log('block bound click', { target, event, context: this });
+  function boundClick(event) {
+    console.log('block bound click', { event, context: this });
   }
 
-  testBlock.on('click', (target, event) => {
-    console.log('block click', { target, event, context: this  });
+  testBlock.on('click', function(event) {
+    console.log('block click', { event, context: this  });
   });
 
-  testBlock.on('click', boundClick, testBlock);
+  testBlock.on('click', (event) => {
+    console.log('block arrow click', { event, context: this  });
+  });
+
+  testBlock.on('click', boundClick, { testContext: true });
 
   return testBlock;
 }
 
-function test53() {
-  // * 53) Block off method * //
+function test57() {
+  // * 57) Block off method * //
 
   beforeEach();
 
@@ -1404,8 +1408,8 @@ function test53() {
   return testBlock;
 }
 
-function test54() {
-  // * 54) View on method * //
+function test58() {
+  // * 58) View on method * //
 
   beforeEach();
 
@@ -1415,8 +1419,8 @@ function test54() {
       this.on('click', this.onClick);
     }
 
-    onClick(target, event) {
-      console.log('view click', { target, event });
+    onClick(event) {
+      console.log('view click', { event, context: this });
     }
   }
 
@@ -1427,8 +1431,8 @@ function test54() {
   return myView;
 }
 
-function test55() {
-  // * 55) View off method * //
+function test59() {
+  // * 59) View off method * //
 
   beforeEach();
 
@@ -1439,8 +1443,8 @@ function test55() {
       this.off('click', this.onClick);
     }
 
-    onClick(target, event) {
-      console.log('view click', { target, event });
+    onClick(event) {
+      console.log('view click', { event, context: this });
     }
   }
 
@@ -1451,8 +1455,8 @@ function test55() {
   return myView;
 }
 
-function test56() {
-  // * 56) View on elem method * //
+function test60() {
+  // * 60) View on elem method * //
 
   beforeEach();
 
@@ -1460,13 +1464,13 @@ function test56() {
     constructor(options) {
       super(options);
 
-      this.element.innerHTML = `<span class="${this.elem('title')}">content</span>`;
+      this.element.innerHTML += `<br /><span class="${this.elem('title')}">content</span>`;
 
       this.on('title', 'click', this.onClick);
     }
 
-    onClick(target, event) {
-      console.log('view elem click', { target, event });
+    onClick(event) {
+      console.log('view elem click', { event, context: this });
     }
   }
 
@@ -1477,8 +1481,8 @@ function test56() {
   return myView;
 }
 
-function test57() {
-  // * 57) View off elem method * //
+function test61() {
+  // * 61) View off elem method * //
 
   beforeEach();
 
@@ -1486,14 +1490,14 @@ function test57() {
     constructor(options) {
       super(options);
 
-      this.element.innerHTML = `<span class="${this.elem('title')}">content</span>`;
+      this.element.innerHTML += `<br /><span class="${this.elem('title')}">content</span>`;
 
       this.on('title', 'click', this.onClick);
       this.off('title', 'click', this.onClick);
     }
 
-    onClick(target, event) {
-      console.log('view elem click', { target, event });
+    onClick(event) {
+      console.log('view elem click', { event, context: this });
     }
   }
 
@@ -1504,8 +1508,8 @@ function test57() {
   return myView;
 }
 
-function test58() {
-  // * 58) View delegate method * //
+function test62() {
+  // * 62) View delegate method * //
 
   beforeEach();
 
@@ -1540,7 +1544,12 @@ function test58() {
     }
 
     onItemClick(item, event) {
-      console.log('item clicked', { hidden: item.getMod('hidden'), target: item, event });
+      console.log('item delegated clicked', {
+        target: item,
+        event,
+        context: this,
+        hidden: item.getMod('hidden')
+      });
     }
   }
 
@@ -1551,8 +1560,8 @@ function test58() {
   return myView;
 }
 
-function test59() {
-  // * 59) Block trigger method * //
+function test63() {
+  // * 63) Block trigger method * //
 
   beforeEach();
 
@@ -1560,8 +1569,8 @@ function test59() {
 
   const testBlock = new Block({ element });
 
-  testBlock.on('my-event', (_target, event) => {
-    console.log('my-event', { event, detail: event.detail });
+  testBlock.on('my-event', (event) => {
+    console.log('my-event', { event, detail: event.detail, context: this });
   });
 
   testBlock.trigger('my-event', { name: 'Tom', age: 12 });
@@ -1569,8 +1578,8 @@ function test59() {
   return testBlock;
 }
 
-function test60() {
-  // * 60) View trigger method * //
+function test64() {
+  // * 64) View trigger method * //
 
   beforeEach();
 
@@ -1606,16 +1615,16 @@ function test60() {
       this.delegate('item', 'my-event', this.delegatedListener);
     }
 
-    blockListener(target, event) {
-      console.log('blockListener', { target, event, detail: event.detail });
+    blockListener(event) {
+      console.log('blockListener', { event, detail: event.detail, context: this });
     }
 
-    elemListener(target, event) {
-      console.log('elemListener', { target, event, detail: event.detail });
+    elemListener(event) {
+      console.log('elemListener', { event, detail: event.detail, context: this });
     }
 
     delegatedListener(target, event) {
-      console.log('delegatedListener', { target, event, detail: event.detail });
+      console.log('delegatedListener', { target, event, detail: event.detail, context: this });
     }
   }
 
@@ -1625,17 +1634,29 @@ function test60() {
   const title = myView.find('title');
   const item = myView.find('item', { hidden: true });
 
+  /*
+    blockListener view-dispatch
+    elemListener view-elem-dispatch
+    blockListener view-elem-dispatch
+    elemListener block-dispatch
+    blockListener block-dispatch
+    blockListener view-elem-dispatch-2
+    delegatedListener view-elem-dispatch-2
+    blockListener block-dispatch-2
+    delegatedListener block-dispatch-2
+  */
+
   myView.trigger('my-event', { type: 'view-dispatch' });
-  myView.trigger('my-event', 'title', { type: 'view-elem-dispatch' });
+  myView.trigger('title', 'my-event', { type: 'view-elem-dispatch' });
   title.trigger('my-event', { type: 'block-dispatch' });
-  myView.trigger('my-event', 'item', { type: 'view-elem-dispatch-2' });
+  myView.trigger('item', 'my-event', { type: 'view-elem-dispatch-2' });
   item.trigger('my-event', { type: 'block-dispatch-2' });
 
   return myView;
 }
 
-function test61() {
-  // * 61) Block once method * //
+function test65() {
+  // * 65) Block once method * //
 
   beforeEach();
 
@@ -1643,20 +1664,20 @@ function test61() {
 
   const testBlock = new Block({ element });
 
-  testBlock.once('click', (target, event) => {
-    console.log('clicked block once', { target, event });
+  testBlock.once('click', (event) => {
+    console.log('clicked block once', { event, context: this });
   });
 
-  testBlock.once('click', (target, event) => {
-    console.log('clicked block once with error', { target, event });
+  testBlock.once('click', (event) => {
+    console.log('clicked block once with error', { event, context: this });
     throw new Error('test error');
   });
 
   return testBlock;
 }
 
-function test62() {
-  // * 62) View once method * //
+function test66() {
+  // * 66) View once method * //
 
   beforeEach();
 
@@ -1664,14 +1685,24 @@ function test62() {
     constructor(options) {
       super(options);
 
-      this.element.innerHTML = `<span class="${this.elem('title')}">content</span>`;
+      this.element.innerHTML += `<br /><span class="${this.elem('title')}">content</span>`;
 
-      this.once('click', (target, event) => {
-        console.log('clicked view once', { target, event });
+      this.once('click', (event) => {
+        console.log('clicked view once', { event, context: this });
       });
 
-      this.once('title', 'click', (target, event) => {
-        console.log('clicked view title once', { target, event });
+      this.once('click', (event) => {
+        console.log('clicked view once with error', { event, context: this });
+        throw new Error('test error');
+      });
+
+      this.once('title', 'click', (event) => {
+        console.log('clicked view title once', { event, context: this });
+      });
+
+      this.once('title', 'click', (event) => {
+        console.log('clicked view title once with error', { event, context: this });
+        throw new Error('test error');
       });
     }
   }
@@ -1683,8 +1714,8 @@ function test62() {
   return myView;
 }
 
-function test63() {
-  // * 63) Block on context * //
+function test67() {
+  // * 67) Block on context * //
 
   beforeEach();
 
@@ -1694,36 +1725,32 @@ function test63() {
 
   const customContext = { name: 'Tom', age: 12 };
 
-  testBlock.on('click', function(target, event) {
+  testBlock.on('click', function(event) {
     console.log('on handler', {
-      target,
       event,
       context: this,
       check: this === testBlock
     });
   });
 
-  testBlock.once('click', function(target, event) {
+  testBlock.once('click', function(event) {
     console.log('once handler', {
-      target,
       event,
       context: this,
       check: this === testBlock
     });
   });
 
-  testBlock.on('click', function(target, event) {
+  testBlock.on('click', function(event) {
     console.log('on handler custom context', {
-      target,
       event,
       context: this,
       check: this === customContext
     });
   }, customContext);
 
-  testBlock.once('click', function(target, event) {
+  testBlock.once('click', function(event) {
     console.log('once handler custom context', {
-      target,
       event,
       context: this,
       check: this === customContext
@@ -1733,8 +1760,8 @@ function test63() {
   return testBlock;
 }
 
-function test64() {
-  // * 64) View on context * //
+function test68() {
+  // * 68) View on context * //
 
   beforeEach();
 
@@ -1744,38 +1771,34 @@ function test64() {
     constructor(options) {
       super(options);
 
-      this.element.innerHTML = `<span class="${this.elem('title')}">content</span>`;
+      this.element.innerHTML += `<br /><span class="${this.elem('title')}">content</span>`;
 
-      this.on('click', function(target, event) {
+      this.on('click', function(event) {
         console.log('on handler', {
-          target,
           event,
           context: this,
           check: this === myView
         });
       });
 
-      this.once('click', function(target, event) {
+      this.once('click', function(event) {
         console.log('once handler', {
-          target,
           event,
           context: this,
           check: this === myView
         });
       });
 
-      this.on('title', 'click', function(target, event) {
+      this.on('title', 'click', function(event) {
         console.log('on elem handler', {
-          target,
           event,
           context: this,
           check: this === myView
         });
       });
 
-      this.once('title', 'click', function(target, event) {
+      this.once('title', 'click', function(event) {
         console.log('once elem handler', {
-          target,
           event,
           context: this,
           check: this === myView

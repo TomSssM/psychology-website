@@ -650,7 +650,7 @@ class View extends Block {
       return;
     }
 
-    target.once(eventName, handler);
+    target.once(eventName, handler, this);
   }
 
   trigger(...args) {
@@ -715,7 +715,7 @@ class View extends Block {
       target = this.element;
     }
 
-    if (targetElement instanceof Element) {
+    if (targetElement instanceof Element || targetElement instanceof Block) {
       target = targetElement;
     }
 
