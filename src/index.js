@@ -219,9 +219,8 @@ class BlockUtils {
         continue;
       }
 
-      if (className === blockName) {
-        result.block = className;
-        continue;
+      if (!result.block) {
+        result.block = blockName;
       }
 
       const parts = className.split('__');
@@ -268,7 +267,7 @@ class BlockUtils {
       modValue = args[1];
     }
 
-    if (!modValue) {
+    if (!modValue && modValue !== 0) {
       modValue = false;
     }
 
@@ -364,13 +363,13 @@ class Block {
   }
 
   setMods(mods) {
-    Object.keys(this.getMods()).forEach((modName) => {
+    ObjectUtils.forEachKey(this.getMods(), function (modName) {
       if (modName in mods) {
         return;
       }
 
       this.setMod(modName, false);
-    });
+    }, this);
 
     ObjectUtils.forEach(mods, function (modName, modValue) {
       this.setMod(modName, modValue);
@@ -393,7 +392,7 @@ class Block {
       this.element.classList.remove(mod.className);
     });
 
-    if (!modValue) {
+    if (!modValue && modValue !== 0) {
       return;
     }
 
@@ -467,19 +466,21 @@ class Block {
     this.state.listeners.set(this.element, events);
 
     this.element.addEventListener(eventName, boundHandler);
+
+    return this;
   }
 
   off(eventName, handler) {
     const events = this.state.listeners.get(this.element);
 
     if (!events) {
-      return;
+      return this;
     }
 
     const listeners = events[eventName];
 
     if (!Array.isArray(listeners)) {
-      return;
+      return this;
     }
 
     events[eventName] = listeners.filter(({
@@ -494,11 +495,13 @@ class Block {
 
       return true;
     });
+
+    return this;
   }
 
   once(eventName, handler, context) {
     if (!eventName || typeof handler !== 'function') {
-      return;
+      return this;
     }
 
     const handleOnce = (...args) => {
@@ -507,9 +510,11 @@ class Block {
     }
 
     this.on(eventName, handleOnce);
+
+    return this;
   }
 
-  trigger(eventName, detail) {
+  dispatch(eventName, detail) {
     this.element.dispatchEvent(
       new CustomEvent(eventName, {
         bubbles: true,
@@ -517,6 +522,10 @@ class Block {
         detail
       })
     );
+  }
+
+  cls() {
+    return this.element.className;
   }
 
   destruct() {
@@ -566,6 +575,7 @@ class View extends Block {
 
     this.state = Object.assign({}, this.state, {
       appState: null,
+      viewListeners: new Map(),
       modHanders: {},
       setters: {}
     });
@@ -590,77 +600,123 @@ class View extends Block {
     return this.state.setters;
   }
 
-  on(...args) {
+  bindTo(...args) {
     if (args.length < 2) {
-      return;
+      return this;
     }
 
     if (args.length === 2) {
       const [eventName, handler] = args;
-      super.on(eventName, handler);
-      return;
+      this.find().on(eventName, handler, this);
+      return this;
     }
 
     const [targetElement, eventName, handler] = args;
     const target = this.find(targetElement);
 
     if (!target) {
-      return;
+      return this;
     }
 
     target.on(eventName, handler, this);
+
+    return this;
   }
 
-  off(...args) {
+  unbindFrom(...args) {
     if (args.length < 2) {
-      return;
+      return this;
     }
 
     if (args.length === 2) {
       const [eventName, handler] = args;
-      super.off(eventName, handler);
-      return;
+      this.find().off(eventName, handler);
+      return this;
     }
 
     const [targetElement, eventName, handler] = args;
     const target = this.find(targetElement);
 
     if (!target) {
-      return;
+      return this;
     }
 
     target.off(eventName, handler);
+
+    return this;
   }
 
   once(...args) {
     if (args.length < 2) {
-      return;
+      return this;
     }
 
     if (args.length === 2) {
       const [eventName, handler] = args;
-      super.once(eventName, handler);
-      return;
+      this.find().once(eventName, handler, this);
+      return this;
     }
 
     const [targetElement, eventName, handler] = args;
     const target = this.find(targetElement);
 
     if (!target) {
-      return;
+      return this;
     }
 
     target.once(eventName, handler, this);
+
+    return this;
   }
 
-  trigger(...args) {
+  delegate(targetElement, eventName, eventHandler) {
+    const handleDelegate = (event) => {
+      const target = event.target.closest(this.elem(targetElement, true));
+
+      if (!target) {
+        return this;
+      }
+
+      eventHandler.call(this, event);
+    };
+
+    this.bindTo(eventName, handleDelegate);
+
+    const events = this.state.listeners.get(this.element);
+    const listeners = events[eventName];
+    const eventData = listeners.find(({ handler }) => handler === handleDelegate);
+
+    eventData.handler = eventHandler;
+
+    return this;
+  }
+
+  liveBindTo(targetElement, eventName, eventHandler) {
+    const handleLiveBindTo = (event) => {
+      const target = event.target.closest(this.elem(targetElement, true));
+
+      eventHandler.call(this, this.elemify(target), event);
+    };
+
+    this.delegate(targetElement, eventName, handleLiveBindTo);
+
+    const events = this.state.listeners.get(this.element);
+    const listeners = events[eventName];
+    const eventData = listeners.find(({ handler }) => handler === handleLiveBindTo);
+
+    eventData.handler = eventHandler;
+
+    return this;
+  }
+
+  dispatch(...args) {
     if (args.length < 2) {
       return;
     }
 
     if (args.length === 2) {
       const [eventName, detail] = args;
-      super.trigger(eventName, detail);
+      super.dispatch(eventName, detail);
       return;
     }
 
@@ -671,21 +727,58 @@ class View extends Block {
       return;
     }
 
-    target.trigger(eventName, detail);
+    target.dispatch(eventName, detail);
   }
 
-  delegate(targetElement, eventName, eventHandler) {
-    const handleDelegate = (event) => {
-      const target = event.target.closest(this.elem(targetElement, true));
+  on(eventName, handler, context) {
+    const listeners = this.state.viewListeners.get(eventName) || [];
+    const boundHandler = handler.bind(context || this);
 
-      if (!target) {
-        return;
-      }
+    listeners.push({ handler, boundHandler });
 
-      eventHandler.call(this, this.elemify(target), event);
+    this.state.viewListeners.set(eventName, listeners);
+
+    return this;
+  }
+
+  onFirst(eventName, handler, context) {
+    const handleFirst = (...args) => {
+      this.off(eventName, handleFirst);
+      handler.apply(context || this, args);
     };
 
-    this.on(eventName, handleDelegate);
+    this.on(eventName, handleFirst);
+
+    return this;
+  }
+
+  off(eventName, handler) {
+    const listeners = this.state.viewListeners.get(eventName) || [];
+
+    if (!Array.isArray(listeners)) {
+      return this;
+    }
+
+    this.state.viewListeners.set(eventName, listeners.filter(({
+      handler: listenerHandler,
+      boundHandler
+    }) => {
+      return listenerHandler !== handler && boundHandler !== handler;
+    }));
+
+    return this;
+  }
+
+  trigger(eventName, value) {
+    const listeners = this.state.viewListeners.get(eventName);
+
+    if (!Array.isArray(listeners)) {
+      return;
+    }
+
+    listeners.forEach(({ boundHandler }) => {
+      boundHandler(value);
+    });
   }
 
   elemify(targetElement) {
@@ -830,7 +923,7 @@ class View extends Block {
 class Accordion extends View {
   constructor(options) {
     super(options);
-    this.delegate('title', 'click', this.onTitleClick);
+    this.liveBindTo('title', 'click', this.onTitleClick);
   }
 
   onTitleClick(title) {

@@ -84,7 +84,7 @@ function test5() {
 
   const element = document.querySelector('.test');
 
-  return new MyBlock({ block: 'cool', element }).block;
+  return new MyBlock({ block: 'cool', element }).block; // "cool"
 }
 
 function test6() {
@@ -98,7 +98,7 @@ function test6() {
 
   const element = document.querySelector('.test');
 
-  return new MyBlock({ element }).block;
+  return new MyBlock({ element }).block; // "cool-two"
 }
 
 function test7() {
@@ -123,8 +123,8 @@ function test7() {
   const implicit = new MyImplicitOtherBlock({ element }).block;
 
   return {
-    explicit,
-    implicit
+    explicit, // "my-other-block"
+    implicit // "cool-two"
   };
 }
 
@@ -138,7 +138,7 @@ function test8() {
 
   const element = document.querySelector('.test');
 
-  return new MyBlock({ element }).block;
+  return new MyBlock({ element }).block; // "my-block"
 }
 
 function test9() {
@@ -154,7 +154,7 @@ function test9() {
 
   const element = document.querySelector('.test');
 
-  return new MyOtherBlock({ element }).block;
+  return new MyOtherBlock({ element }).block; // "my-other-block"
 }
 
 function test10() {
@@ -168,7 +168,7 @@ function test10() {
 
   const element = document.querySelector('.test');
 
-  return new MyView({ element }).block;
+  return new MyView({ element }).block; // "cool-view"
 }
 
 function test11() {
@@ -193,8 +193,8 @@ function test11() {
   const implicit = new MyImplicitOtherView({ element }).block;
 
   return {
-    explicit,
-    implicit
+    explicit, // "my-other-view"
+    implicit // "cool-view"
   };
 }
 
@@ -208,7 +208,7 @@ function test12() {
 
   const element = document.querySelector('.test');
 
-  return new MyView({ element }).block;
+  return new MyView({ element }).block; // "my-view"
 }
 
 function test13() {
@@ -224,7 +224,7 @@ function test13() {
 
   const element = document.querySelector('.test');
 
-  return new MyOtherView({ element }).block;
+  return new MyOtherView({ element }).block; // "my-other-view"
 }
 
 function test14() {
@@ -236,7 +236,7 @@ function test14() {
 
   const testBlock = new Block({ block: 'block-getter', element });
 
-  return testBlock.block;
+  return testBlock.block; // "block-getter"
 }
 
 function test15() {
@@ -251,7 +251,7 @@ function test15() {
 
   const myView = new MyView({ element });
 
-  return myView.block;
+  return myView.block; // "my-view"
 }
 
 function test16() {
@@ -291,9 +291,9 @@ function test18() {
   const testBlock = new Block({ element });
 
   const results = {
-    empty: testBlock.elem(),
-    noClassName: testBlock.elem('test'),
-    yesClassName: testBlock.elem('test', true)
+    empty: testBlock.elem(), // "block__"
+    noClassName: testBlock.elem('test'), // "block__test"
+    yesClassName: testBlock.elem('test', true) // ".block__test"
   };
 
   return results;
@@ -312,9 +312,9 @@ function test19() {
   const myView = new MyView({ element });
 
   const results = {
-    empty: myView.elem(),
-    noClassName: myView.elem('test'),
-    yesClassName: myView.elem('test', true)
+    empty: myView.elem(), // "my-view__"
+    noClassName: myView.elem('test'), // "my-view__test"
+    yesClassName: myView.elem('test', true) // ".my-view__test"
   };
 
   return results;
@@ -329,7 +329,7 @@ function test20() {
 
   const testBlock = new Block({ element });
 
-  return testBlock.getName();
+  return testBlock.getName(); // "block"
 }
 
 function test21() {
@@ -344,7 +344,7 @@ function test21() {
 
   const myView = new MyView({ element });
 
-  return myView.getName();
+  return myView.getName(); // "my-view"
 }
 
 function test22() {
@@ -356,7 +356,7 @@ function test22() {
 
   const testBlock = new Block({ element });
 
-  return testBlock.getParams();
+  return testBlock.getParams(); // {}
 }
 
 function test23() {
@@ -369,8 +369,8 @@ function test23() {
   const testBlock = new Block({ element });
 
   const result = {
-    empty: testBlock.getParam(),
-    nonEmpty: testBlock.getParam('my-param'),
+    empty: testBlock.getParam(), // undefined
+    nonEmpty: testBlock.getParam('my-param'), // undefined
   };
 
   return result;
@@ -385,7 +385,7 @@ function test24() {
 
   const testBlock = new Block({ element });
 
-  return testBlock.params;
+  return testBlock.params; // {}
 }
 
 function test25() {
@@ -400,7 +400,7 @@ function test25() {
 
   const myView = new MyView({ element });
 
-  return myView.getParams();
+  return myView.getParams(); // {}
 }
 
 function test26() {
@@ -416,8 +416,8 @@ function test26() {
   const myView = new MyView({ element });
 
   const result = {
-    empty: myView.getParam(),
-    nonEmpty: myView.getParam('my-param'),
+    empty: myView.getParam(), // undefined
+    nonEmpty: myView.getParam('my-param') // undefined
   };
 
   return result;
@@ -435,7 +435,7 @@ function test27() {
 
   const myView = new MyView({ element });
 
-  return myView.params;
+  return myView.params; // {}
 }
 
 function test28() {
@@ -472,7 +472,10 @@ function test28() {
     one: testBlock.getParam('one')
   };
 
-  return { firstCase, secondCase };
+  return {
+    firstCase, // { all: { name: 'Tom', age: 12, cool: true, whatever: null }, one: 'Tom' }
+    secondCase // { all: { one: 1, two: 2, three: null }, one: 1 }
+  };
 }
 
 function test29() {
@@ -498,7 +501,10 @@ function test29() {
     one: testBlock.getParam('name')
   };
 
-  return { firstCase, secondCase };
+  return {
+    firstCase, // { all: { name: 'Tom2' }, one: 'Tom2' }
+    secondCase // { all: { name: 'Tom2', age: 22 }, one: 'Tom2' }
+  };
 }
 
 function test30() {
@@ -538,7 +544,10 @@ function test30() {
     one: myView.getParam('one')
   };
 
-  return { firstCase, secondCase };
+  return {
+    firstCase, // { all: { name: 'Tom', age: 12, cool: true, whatever: null }, one: 'Tom' }
+    secondCase // { all: { one: 1, two: 2, three: null }, one: 1 }
+  };
 }
 
 function test31() {
@@ -567,7 +576,10 @@ function test31() {
     one: myView.getParam('name')
   };
 
-  return { firstCase, secondCase };
+  return {
+    firstCase, // { all: { name: 'Tom2' }, one: 'Tom2' }
+    secondCase // { all: { name: 'Tom2', age: 22 }, one: 'Tom2' }
+  };
 }
 
 function test32() {
@@ -579,7 +591,7 @@ function test32() {
 
   const testBlock = new Block({ element });
 
-  return testBlock.getMods();
+  return testBlock.getMods(); // {}
 }
 
 function test33() {
@@ -596,7 +608,7 @@ function test33() {
     nonEmpty: testBlock.getMod('my-mod'),
   };
 
-  return result;
+  return result; // { empty: undefined, nonEmpty: undefined }
 }
 
 function test34() {
@@ -611,7 +623,7 @@ function test34() {
 
   const myView = new MyView({ element });
 
-  return myView.getMods();
+  return myView.getMods(); // {}
 }
 
 function test35() {
@@ -631,7 +643,7 @@ function test35() {
     nonEmpty: myView.getMod('my-mod'),
   };
 
-  return result;
+  return result; // { empty: undefined, nonEmpty: undefined }
 }
 
 function test36() {
@@ -648,6 +660,7 @@ function test36() {
     expanded: true,
     size: 12,
     zero: 0,
+    empty: '',
     destructing: false,
     empty: undefined,
     whatever: null
@@ -656,7 +669,7 @@ function test36() {
   const firstCase = {
     all: testBlock.getMods(),
     one: testBlock.getMod('open'),
-    cls: testBlock.element.classList.toString()
+    clsCheck: testBlock.cls() === testBlock.element.classList.toString()
   };
 
   testBlock.setMods({
@@ -669,10 +682,14 @@ function test36() {
     all: testBlock.getMods(),
     one: testBlock.getMod('visible'),
     another: testBlock.getMod('open'),
-    cls: testBlock.element.classList.toString()
+    cls: testBlock.element.classList.toString(),
+    clsCheck: testBlock.cls() === testBlock.element.classList.toString()
   };
 
-  return { firstCase, secondCase };
+  return {
+    firstCase, // { all: { open: 'yes', expanded: true, size: '12', zero: '0' }, one: 'yes', cls: 'test block my-view block_open_yes block_expanded block_size_12 block_zero_0' }
+    secondCase // { all: { size: 'xs', visible: true }, one: true, another: undefined, cls: 'test block my-view block_visible block_size_xs' }
+  };
 }
 
 function test37() {
@@ -688,10 +705,13 @@ function test37() {
   testBlock.setMod('visible', true);
   testBlock.setMod('size', 'xs');
   testBlock.setMod('zero', 0);
+  testBlock.setMod('empty', '');
 
   const firstCase = {
     all: testBlock.getMods(),
-    one: testBlock.getMod('size')
+    one: testBlock.getMod('size'),
+    cls: testBlock.element.className.toString(),
+    clsCheck: testBlock.cls() === testBlock.element.classList.toString()
   };
 
   testBlock.setMod('open', undefined);
@@ -701,10 +721,15 @@ function test37() {
 
   const secondCase = {
     all: testBlock.getMods(),
-    one: testBlock.getMod('size')
+    one: testBlock.getMod('size'),
+    cls: testBlock.element.className.toString(),
+    clsCheck: testBlock.cls() === testBlock.element.classList.toString()
   };
 
-  return { firstCase, secondCase };
+  return {
+    firstCase, // { all: { open: true, visible: true, size: 'xs', zero: '0' }, one: 'xs' }
+    secondCase // { all: { size: '0' }, one: '0' }
+  };
 }
 
 function test38() {
@@ -724,6 +749,7 @@ function test38() {
     expanded: true,
     size: 12,
     zero: 0,
+    empty: '',
     destructing: false,
     empty: undefined,
     whatever: null
@@ -732,7 +758,8 @@ function test38() {
   const firstCase = {
     all: myView.getMods(),
     one: myView.getMod('open'),
-    cls: myView.element.classList.toString()
+    cls: myView.element.classList.toString(),
+    clsCheck: myView.cls() === myView.element.classList.toString()
   };
 
   myView.setMods({
@@ -745,10 +772,14 @@ function test38() {
     all: myView.getMods(),
     one: myView.getMod('visible'),
     another: myView.getMod('open'),
-    cls: myView.element.classList.toString()
+    cls: myView.element.classList.toString(),
+    clsCheck: myView.cls() === myView.element.classList.toString()
   };
 
-  return { firstCase, secondCase };
+  return {
+    firstCase, // { all: { open: 'yes', expanded: true, size: '12', zero: '0' }, one: 'yes', cls: 'test block my-view my-view_open_yes my-view_expanded my-view_size_12 my-view_zero_0' }
+    secondCase // { all: { size: 'xs', visible: true }, one: true, another: undefined, cls: 'test block my-view my-view_visible my-view_size_xs' }
+  };
 }
 
 function test39() {
@@ -767,10 +798,13 @@ function test39() {
   myView.setMod('visible', true);
   myView.setMod('size', 'xs');
   myView.setMod('zero', 0);
+  myView.setMod('empty', '');
 
   const firstCase = {
     all: myView.getMods(),
-    one: myView.getMod('size')
+    one: myView.getMod('size'),
+    cls: myView.element.className.toString(),
+    clsCheck: myView.cls() === myView.element.classList.toString()
   };
 
   myView.setMod('open', undefined);
@@ -780,10 +814,15 @@ function test39() {
 
   const secondCase = {
     all: myView.getMods(),
-    one: myView.getMod('size')
+    one: myView.getMod('size'),
+    cls: myView.element.className.toString(),
+    clsCheck: myView.cls() === myView.element.classList.toString()
   };
 
-  return { firstCase, secondCase };
+  return {
+    firstCase, // { all: { open: true, visible: true, size: 'xs', zero: '0' }, one: 'xs' }
+    secondCase // { all: { size: '0' }, one: '0' }
+  };
 }
 
 function test40() {
@@ -797,11 +836,13 @@ function test40() {
 
   testBlock.toggleMod('open');
   testBlock.toggleMod('closed', null);
+  testBlock.toggleMod('empty', '');
 
   const firstCase = testBlock.getMods();
 
   testBlock.toggleMod('open');
   testBlock.toggleMod('closed', undefined);
+  testBlock.toggleMod('empty', '');
 
   const secondCase = testBlock.getMods();
 
@@ -810,7 +851,13 @@ function test40() {
 
   const thirdCase = testBlock.getMods();
 
-  return { firstCase, secondCase, thirdCase };
+  return {
+    firstCase, // { open: true }
+    secondCase, // {}
+    thirdCase, // { open: 'yes', closed: '0' }
+    cls: testBlock.element.classList.toString(),
+    clsCheck: testBlock.cls() === testBlock.element.classList.toString()
+  };
 }
 
 function test41() {
@@ -827,11 +874,13 @@ function test41() {
 
   myView.toggleMod('open');
   myView.toggleMod('closed', null);
+  myView.toggleMod('empty', '');
 
   const firstCase = myView.getMods();
 
   myView.toggleMod('open');
   myView.toggleMod('closed', undefined);
+  myView.toggleMod('empty', '');
 
   const secondCase = myView.getMods();
 
@@ -840,7 +889,13 @@ function test41() {
 
   const thirdCase = myView.getMods();
 
-  return { firstCase, secondCase, thirdCase };
+  return {
+    firstCase, // { open: true }
+    secondCase, // {}
+    thirdCase, // { open: 'yes', closed: '0' }
+    cls: myView.element.classList.toString(),
+    clsCheck: myView.cls() === myView.element.classList.toString()
+  };
 }
 
 function test42() {
@@ -853,9 +908,15 @@ function test42() {
 
   const element = document.querySelector('.test');
 
+  element.innerHTML = '<span class="my-view__title">content</span>';
+
   const myView = new MyView({ element });
 
-  return myView.getElemMods('title');
+  return {
+    mods: myView.getElemMods('title'), // {}
+    cls: myView.find('title').element.classList.toString(),
+    clsCheck: myView.find('title').cls() === myView.find('title').element.classList.toString()
+  }
 }
 
 function test43() {
@@ -868,14 +929,18 @@ function test43() {
 
   const element = document.querySelector('.test');
 
+  element.innerHTML = '<span class="my-view__title">content</span>';
+
   const myView = new MyView({ element });
 
   const result = {
     empty: myView.getElemMod('title'),
-    nonEmpty: myView.getElemMod('title', 'size')
+    nonEmpty: myView.getElemMod('title', 'size'),
+    cls: myView.find('title').element.classList.toString(),
+    clsCheck: myView.find('title').cls() === myView.find('title').element.classList.toString()
   };
 
-  return result;
+  return result; // { empty: undefined, nonEmpty: undefined }
 }
 
 function test44() {
@@ -896,6 +961,8 @@ function test44() {
     open: 'yes',
     expanded: true,
     size: 12,
+    zero: 0,
+    empty: '',
     destructing: false,
     empty: undefined,
     whatever: null
@@ -903,7 +970,9 @@ function test44() {
 
   const firstCase = {
     all: myView.getElemMods('title'),
-    one: myView.getElemMod('title', 'open')
+    one: myView.getElemMod('title', 'open'),
+    cls: myView.find('title').element.classList.toString(),
+    clsCheck: myView.find('title').cls() === myView.find('title').element.classList.toString()
   };
 
   myView.setElemMods('title', {
@@ -915,10 +984,15 @@ function test44() {
   const secondCase = {
     all: myView.getElemMods('title'),
     one: myView.getElemMod('title', 'visible'),
-    another: myView.getElemMod('title', 'open')
+    another: myView.getElemMod('title', 'open'),
+    cls: myView.find('title').element.classList.toString(),
+    clsCheck: myView.find('title').cls() === myView.find('title').element.classList.toString()
   };
 
-  return { firstCase, secondCase };
+  return {
+    firstCase, // { all: { open: 'yes', expanded: true, size: '12', zero: '0' }, one: 'yes' }
+    secondCase // { all: { size: 'xs', visible: true }, one: true, another: undefined }
+  };
 }
 
 function test45() {
@@ -938,20 +1012,30 @@ function test45() {
   myView.setElemMod('title', 'open');
   myView.setElemMod('title', 'visible', true);
   myView.setElemMod('title', 'size', 'xs');
+  myView.setElemMod('title', 'zero', 0);
+  myView.setElemMod('title', 'empty', '');
 
   const firstCase = {
     all: myView.getElemMods('title'),
-    one: myView.getElemMod('title', 'size')
+    one: myView.getElemMod('title', 'size'),
+    cls: myView.find('title').element.classList.toString(),
+    clsCheck: myView.find('title').cls() === myView.find('title').element.classList.toString()
   };
 
   myView.setElemMod('title', 'size', null);
+  myView.setElemMod('title', 'zero', false);
 
   const secondCase = {
     all: myView.getElemMods('title'),
-    one: myView.getElemMod('title', 'size')
+    one: myView.getElemMod('title', 'open'),
+    cls: myView.find('title').element.classList.toString(),
+    clsCheck: myView.find('title').cls() === myView.find('title').element.classList.toString()
   };
 
-  return { firstCase, secondCase };
+  return {
+    firstCase, // { all: { open: true, visible: true, size: 'xs', zero: '0' }, one: 'xs' }
+    secondCase // { all: { open: true, visible: true }, one: true }
+  };
 }
 
 function test46() {
@@ -969,10 +1053,12 @@ function test46() {
   const myView = new MyView({ element });
 
   myView.toggleElemMod('title', 'open');
+  myView.toggleElemMod('title', 'empty', '');
 
   const firstCase = myView.getElemMod('title', 'open');
 
   myView.toggleElemMod('title', 'open');
+  myView.toggleElemMod('title', 'empty', '');
 
   const secondCase = myView.getElemMod('title', 'open');
 
@@ -980,7 +1066,11 @@ function test46() {
 
   const thirdCase = myView.getElemMod('title', 'open');
 
-  return { firstCase, secondCase, thirdCase };
+  return {
+    firstCase, // true
+    secondCase, // undefined
+    thirdCase // "yes"
+  };
 }
 
 function test47() {
@@ -1025,6 +1115,17 @@ function test47() {
   myOtherView.toggleMod('visible');
   myOtherView.toggleMod('open');
   myOtherView.toggleMod('open');
+
+  /**
+    * triggered visible { value: 1, current: undefined }
+    * triggered open { value: 1, current: undefined }
+    * triggered visible { value: 2, current: '1' }
+    * triggered open { value: 2, current: '1' }
+    * triggered visible { value: false, current: '2' }
+    * triggered visible { value: true, current: undefined }
+    * triggered open { value: false, current: '2' }
+    * triggered open { value: true, current: undefined }
+   */
 }
 
 function test48() {
@@ -1054,7 +1155,7 @@ function test48() {
 
   testBlock.remove();
 
-  return testBlock;
+  return testBlock; // check map and element
 }
 
 function test49() {
@@ -1106,7 +1207,7 @@ function test49() {
 
   myView.remove();
 
-  return myView;
+  return myView; // check map and element
 }
 
 function test50() {
@@ -1158,7 +1259,7 @@ function test50() {
 
   myView.remove('title');
 
-  return myView;
+  return myView; // check map and element
 }
 
 function test51() {
@@ -1195,6 +1296,8 @@ function test51() {
   myView.find('title');
   myView.find('title');
   myView.find('title').on('click', () => {});
+  myView.find('title').on('click', () => {});
+  myView.find('title').on('click', () => {});
 
   return myView;
 }
@@ -1226,11 +1329,11 @@ function test52() {
     secondCase,
     thirdCase,
     instanceCheck: [firstCase, thirdCase].every(
-      (value) => value instanceof Block
+      (value) => value instanceof Block && value.element === element
     )
   }
 
-  return result;
+  return result; // { empty: null, firstCase: element, secondCase: null, thirdCase: element, instanceCheck: true }
 }
 
 function test53() {
@@ -1278,7 +1381,7 @@ function test53() {
     specialItem: myView.find('item', { hidden: true })
   };
 
-  return result;
+  return result; // { empty: element, title: title, item: item, itemFound: item, itemFoundElement: item, specialItem: hidden item }
 }
 
 function test54() {
@@ -1326,7 +1429,7 @@ function test54() {
     specialItems: myView.findAll('item', { hidden: true })
   };
 
-  return result;
+  return result; // { empty: [], titles: [title], items: [...item x2 + ...hidden item x2], specialItems: [hidden item x2] }
 }
 
 function test55() {

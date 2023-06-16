@@ -40,7 +40,7 @@ Note that judging from BEM liveBindTo(element, handler, context) = delegate(elem
 
 As a result we get the API:
 Block.on / .off / .dispatch
-View.bindTo / .liveBindTo / .delegate / .dispatch / .on / .off / .trigger
+View.bindTo / .liveBindTo / .delegate / .dispatch / .unbindFrom + .on / .off / .onFirst / .trigger
 
 ### Block name in inheritance
 
@@ -54,6 +54,12 @@ Object.getPrototypeOf(ExtendingView) === BaseView > Object.getPrototypeOf(BaseVi
 ### Integrational note
 
 The inheritance of one View from another may be also manifested in definiing the bemjson for elements undefined in the base View. Therefore the purpose of client side routing may be confined to having base Views define the logic for which elements to update with what undefined elements and the extending Views defining these undefined elements as well as being used as a final View for the controller
+
+### Block bemjson params
+
+When we render block as `{ block, param1, param2 }` we can access these params in `onBlock(ctx) -> ctx.blockParams()` and we _also_ should be able to access them same way in `onElem` except `ctx.params` is going to be equal to `ctx.blockParams()` in `onBlock` and equal to element params in `onElem`
+
+However, then we can call render `{ block, elem: ... }` _again_ and _after_ initial render. In this scenario there don't have to be block params accessible because we didn't pass them (surely they will be available if we do pass them though)
 
 ### Little ideas
 
