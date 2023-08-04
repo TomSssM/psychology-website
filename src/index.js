@@ -511,6 +511,12 @@ class Block {
 
     this.on(eventName, handleOnce);
 
+    const events = this.state.listeners.get(this.element);
+    const listeners = events[eventName];
+    const eventData = listeners.find(({ handler: listenerHandler }) => listenerHandler === handleOnce);
+
+    eventData.handler = handler;
+
     return this;
   }
 
@@ -669,42 +675,42 @@ class View extends Block {
     return this;
   }
 
-  delegate(targetElement, eventName, eventHandler) {
+  delegate(targetElement, eventName, handler) {
     const handleDelegate = (event) => {
       const target = event.target.closest(this.elem(targetElement, true));
 
       if (!target) {
-        return this;
+        return;
       }
 
-      eventHandler.call(this, event);
+      handler.call(this, event);
     };
 
     this.bindTo(eventName, handleDelegate);
 
     const events = this.state.listeners.get(this.element);
     const listeners = events[eventName];
-    const eventData = listeners.find(({ handler }) => handler === handleDelegate);
+    const eventData = listeners.find(({ handler: listenerHandler }) => listenerHandler === handleDelegate);
 
-    eventData.handler = eventHandler;
+    eventData.handler = handler;
 
     return this;
   }
 
-  liveBindTo(targetElement, eventName, eventHandler) {
+  liveBindTo(targetElement, eventName, handler) {
     const handleLiveBindTo = (event) => {
       const target = event.target.closest(this.elem(targetElement, true));
 
-      eventHandler.call(this, this.elemify(target), event);
+      handler.call(this, this.elemify(target), event);
     };
 
     this.delegate(targetElement, eventName, handleLiveBindTo);
 
     const events = this.state.listeners.get(this.element);
     const listeners = events[eventName];
-    const eventData = listeners.find(({ handler }) => handler === handleLiveBindTo);
+    const eventData = listeners.find(({ handler: listenerHandler }) => listenerHandler === handleLiveBindTo);
 
-    eventData.handler = eventHandler;
+    eventData.handler = handler;
 
     return this;
   }
@@ -748,6 +754,11 @@ class View extends Block {
     };
 
     this.on(eventName, handleFirst);
+
+    const listeners = this.state.viewListeners.get(eventName);
+    const eventData = listeners.find(({ handler: listenerHandler }) => listenerHandler === handleFirst);
+
+    eventData.handler = handler;
 
     return this;
   }
@@ -903,6 +914,8 @@ class View extends Block {
 
       this.state.listeners.delete(element);
     });
+
+    this.state.viewListeners.clear();
   }
 
   remove(...args) {

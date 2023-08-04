@@ -67,6 +67,12 @@ However, then we can call render `{ block, elem: ... }` _again_ and _after_ init
 
 Create for Block class useful instance helpers like this.rect() this.px(...) this.append(...) this.prepend(...) this.before(...) this.after(...) this.content(...)
 
-### Accessing the document
+#### Accessing the document
 
 Any View instance should have a useful this.doc getter that would return window.document element
+
+#### One problem solved
+
+How we could solve the problem of rendering custom content in drag and drop block
+
+Though for this particular purpose it would be more expedient to pass the content to render on drag start as param to the template and then the onBlock should pass this template bemjson param into instance part as jsparam and the instance part would use this param or some fallback in order to render the content on drag start
