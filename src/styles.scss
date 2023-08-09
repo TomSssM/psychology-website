@@ -109,7 +109,7 @@ html {
     background-image: url("../assets/gallery-img-4.jpg");
 
     @media screen and (max-height: 599px) {
-      background-position: 0px -100px;
+      background-position: 0px $landscape-landing-offset;
     }
   }
 
