@@ -14,6 +14,7 @@
     "watch:scss": "sass src:build --watch",
     "server": "live-server",
     "clean": "rimraf build",
+    "deploy": "bash ./scripts/deploy.sh",
     "prebuild": "npm run clean",
     "postinstall": "npm run build"
   },
