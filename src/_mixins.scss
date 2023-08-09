@@ -1,11 +1,31 @@
 @mixin font-size-primary {
   font-size: 16px;
   line-height: 22px;
+
+  @media screen and (max-width: 799px) {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  @media screen and (max-height: 450px) {
+    font-size: 18px;
+    line-height: 24px;
+  }
 }
 
 @mixin font-size-secondary {
   font-size: 14px;
   line-height: 20px;
+
+  @media screen and (max-width: 799px) {
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  @media screen and (max-height: 450px) {
+    font-size: 15px;
+    line-height: 22px;
+  }
 }
 
 @mixin font-size-title {

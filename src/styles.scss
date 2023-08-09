@@ -10,14 +10,6 @@ html {
   };
   color: $color-text-primary;
   background-color: $color-background-primary;
-
-  @media screen and (max-width: 799px) {
-    background-color: green;
-  }
-
-  @media screen and (max-height: 450px) {
-    background-color: green;
-  }
 }
 
 .body {
@@ -265,9 +257,11 @@ html {
   }
 
   &__item {
+    @include font-size-primary;
+
     position: relative;
     padding-left: $item-size;
-    width: 300px;
+    max-width: 300px;
     margin: auto;
     margin-top: 40px;
   }
@@ -389,6 +383,8 @@ html {
   }
 
   &__title-text {
+    @include font-size-primary;
+
     flex: 1;
   }
 
@@ -505,6 +501,8 @@ html {
 }
 
 .footer {
+  @include font-size-primary;
+
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
