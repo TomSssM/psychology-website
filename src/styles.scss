@@ -10,6 +10,14 @@ html {
   };
   color: $color-text-primary;
   background-color: $color-background-primary;
+
+  @media screen and (max-width: 799px) {
+    background-color: green;
+  }
+
+  @media screen and (max-height: 450px) {
+    background-color: green;
+  }
 }
 
 .body {
@@ -108,6 +116,10 @@ html {
     max-width: 1000px;
     height: 100%;
     background-image: url("../assets/gallery-img-4.jpg");
+
+    @media screen and (max-height: 599px) {
+      background-position: 0px -100px;
+    }
   }
 
   &__text {
