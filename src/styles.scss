@@ -156,8 +156,13 @@ html {
   text-align: center;
 }
 
+.contact-section  {
+  box-sizing: border-box;
+  padding-top: 10vh;
+  min-height: 70vh;
+}
+
 .buttons-container {
-  margin: 10px 0;
   padding: 0 20px;
   text-align: center;
   max-width: 500px;
