@@ -84,6 +84,16 @@ html {
       transform: translateY(-50%);
     }
 
+    .button {
+      &:hover {
+        background-color: $color-background-action;
+      }
+
+      &:hover:active {
+        background-color: $color-background-action-active;
+      }
+    }
+
     &_hidden {
       pointer-events: none;
       opacity: 0;
@@ -488,7 +498,7 @@ html {
     border-radius: 50%;
     background-color: $color-background-action;
 
-    &:hover {
+    &:hover:not(&_pressed) {
       background-color: $color-background-action-hover;
     }
 
