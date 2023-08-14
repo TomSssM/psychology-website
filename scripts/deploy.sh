@@ -1,1 +1,1 @@
-bash ./scripts/deploy-pages.sh
+source ./scripts/deploy-pages.sh
