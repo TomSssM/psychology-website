@@ -1,9 +1,10 @@
+git add -A
+git stash
+rm -rf ./build
 mkdir ../deploy
 cp ./index.html ../deploy
 npm run build
 cp -r ./build ../deploy/build
-git add -A
-git stash
 git checkout gh-pages
 rm -rf index.html build
 cp ../deploy/index.html ./index.html
