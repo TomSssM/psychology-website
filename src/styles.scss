@@ -191,6 +191,7 @@ html {
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  box-sizing: border-box;
   padding: 16px 32px;
   background-color: $color-background-action;
   font-weight: $font-weight-action;
@@ -254,6 +255,10 @@ html {
 
     &_whatsapp {
       background-image: url("../assets/whatsapp.svg");
+    }
+
+    &_vk {
+      background-image: url("../assets/vk.svg");
     }
   }
 }
