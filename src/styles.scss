@@ -132,6 +132,7 @@ html {
   }
 
   &__title {
+    padding: 10px 8px;
     border-bottom: 1px solid black;
   }
 
@@ -542,6 +543,19 @@ html {
     $color-background-dark 80%,
     $color-background-primary
   );
+
+  @media screen and (max-width: 500px) {
+    flex-flow: column nowrap;
+    align-items: stretch;
+    justify-content: flex-start;
+    text-align: center;
+
+    &__content {
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid $color-line;
+    }
+  }
 
   &__content {
     flex: 1;
