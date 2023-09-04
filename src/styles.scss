@@ -32,6 +32,12 @@ html {
 .subtitle {
   @include font-size-subtitle;
 
+  color: $color-text-subtitle;
+}
+
+.heading {
+  @include font-size-heading;
+
   font: {
     family: $font-family-title;
     weight: $font-weight-primary;
@@ -180,8 +186,13 @@ html {
   max-width: 500px;
   margin: auto;
 
-  > * {
+  > .button:not(:last-of-type) {
     margin: 8px auto;
+  }
+
+  &__subtitle {
+    display: inline-block;
+    margin-top: 24px;
   }
 }
 

@@ -34,6 +34,11 @@
 }
 
 @mixin font-size-subtitle {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+@mixin font-size-heading {
   font-size: 32px;
   line-height: 40px;
 }
