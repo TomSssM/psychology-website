@@ -43,6 +43,11 @@
   line-height: 40px;
 }
 
+@mixin font-size-subheading {
+  font-size: 24px;
+  line-height: 30px;
+}
+
 @mixin transition-primary($property: 'all') {
   transition: {
     property: #{$property};

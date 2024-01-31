@@ -3,7 +3,6 @@
 @import './mixins';
 @import './reset';
 @import './font';
-@import './error';
 
 html {
   font: {
@@ -44,6 +43,19 @@ html {
     weight: $font-weight-primary;
   };
   padding: 8px 0;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.subheading {
+  @include font-size-subheading;
+
+  font: {
+    family: $font-family-title;
+    weight: $font-weight-primary;
+  };
+  padding: 4px 0;
+  margin-bottom: 10px;
   text-align: center;
 }
 
@@ -164,7 +176,7 @@ html {
 }
 
 .article {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: auto;
 }
 
@@ -173,6 +185,10 @@ html {
 
   padding: 5px 30px;
   text-align: center;
+
+  &_bold {
+    font-weight: 400;
+  }
 }
 
 .contact-section  {
@@ -194,6 +210,21 @@ html {
   &__subtitle {
     display: inline-block;
     margin-top: 24px;
+  }
+
+  &__phone {
+    display: inline-block;
+    margin: 10px 0;
+    font: {
+      family: $font-family-primary;
+      weight: $font-weight-action;
+    };
+  }
+
+  &__social {
+    margin: auto;
+    margin-top: 40px;
+    margin-bottom: 10px;
   }
 }
 
@@ -248,8 +279,15 @@ html {
 }
 
 .link {
+  @include transition-primary(#{color});
+
   display: inline;
+  color: $color-text-primary;
   cursor: pointer;
+
+  &:hover {
+    color: $color-text-hover;
+  }
 }
 
 .icon {
@@ -258,10 +296,6 @@ html {
   background-position: center center;
 
   &_type {
-    &_instagram {
-      background-image: url("../assets/instagram.svg");
-    }
-
     &_telegram {
       background-image: url("../assets/telegram.svg");
     }
@@ -270,8 +304,8 @@ html {
       background-image: url("../assets/whatsapp.svg");
     }
 
-    &_vk {
-      background-image: url("../assets/vk.svg");
+    &_phone {
+      background-image: url("../assets/phone-solid.svg");
     }
   }
 }
@@ -301,7 +335,10 @@ html {
     padding-left: $item-size;
     max-width: 300px;
     margin: auto;
-    margin-top: 40px;
+
+    &:not(:first-child) {
+      margin-top: 40px;
+    }
   }
 
   &__marker {
@@ -463,6 +500,14 @@ html {
   }
 }
 
+.divider {
+  display: block;
+  height: 0;
+  width: 300px;
+  margin: 10px auto;
+  border-bottom: 0.5px solid $color-text-primary;
+}
+
 .slider {
   $slider-slide-width: 300px;
   $slider-slide-height: 300px;
@@ -536,6 +581,59 @@ html {
       background-color: $color-background-action-focus;
     }
   }
+}
+
+.social {
+  $icon-size: 20px;
+  $icon-gap: 7px;
+
+  display: inline-flex;
+
+  &__link {
+    @include transition-primary(#{background-color, color});
+
+    width: $icon-size;
+    height: $icon-size;
+    padding: 5px;
+    border-radius: 12px;
+    color: $color-background-highlight;
+    background-color: $color-text-subtitle;
+
+    &:not(:first-child) {
+      margin-left: $icon-gap;
+    }
+
+    &:hover {
+      cursor: pointer;
+
+      color: lighten($color: $color-background-highlight, $amount: 5);
+      background-color: lighten($color: $color-text-subtitle, $amount: 10);
+    }
+  }
+}
+
+.email-link {
+  display: inline-flex;
+  align-items: center;
+
+  &__icon {
+    display: inline-flex;
+    margin-right: 3px;
+    color: lighten($color: $color-text-primary, $amount: 20);
+  }
+
+  &:hover &__icon {
+    color: inherit;
+  }
+}
+
+.error {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 100vh;
 }
 
 .footer {
