@@ -1,9 +1,9 @@
-function init(Block) {
+function init(Block, ...args) {
   if (!Block.block) {
-    new Block();
+    new Block(...args);
   } else {
     for (const rootElem of document.getElementsByClassName(Block.block)) {
-      new Block(rootElem);
+      new Block(rootElem, ...args);
     }
   }
 }
@@ -67,6 +67,9 @@ class ContactButton {
   }
 }
 
+class Paranja {
+}
+
 class Slider {
   static block = 'slider';
 
@@ -82,7 +85,7 @@ class Slider {
 
   static SLIDE_INTERVAL = 4000;
 
-  constructor(rootElem, slideshowEnabled = true) {
+  constructor(rootElem, slideshowEnabled = true, paranja) {
     this.onClick = this.onClick.bind(this);
     this.onPointerDown = this.onPointerDown.bind(this);
     this.onPointerLeave = this.onPointerLeave.bind(this);
@@ -189,4 +192,4 @@ class Slider {
 
 init(Accordion);
 init(ContactButton);
-init(Slider);
+init(Slider, true, new Paranja());
