@@ -660,10 +660,14 @@ html {
   &__slide {
     flex: 1;
     max-width: 400px;
-    min-width: 300px;
+    min-width: 400px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+
+    @media screen and (max-width: 700px) {
+      min-width: 300px;
+    }
   }
 
   &__button {
@@ -702,6 +706,7 @@ html {
     &_type {
       &_next {
         justify-content: flex-end;
+        padding-left: 20px;
 
         &::before {
           background-image: linear-gradient(to left, #7c7c7c 0%, transparent 70%);
@@ -710,6 +715,7 @@ html {
 
       &_prev {
         justify-content: flex-start;
+        padding-right: 20px;
 
         &::before {
           background-image: linear-gradient(to right, #7c7c7c 0%, transparent 70%);
