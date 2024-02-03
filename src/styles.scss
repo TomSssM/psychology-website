@@ -666,6 +666,10 @@ html {
     background-position: center;
 
     @media screen and (max-width: 700px) {
+      min-width: 300px;
+    }
+
+    @media screen and (max-width: 500px) {
       min-width: 250px;
     }
   }
