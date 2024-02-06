@@ -145,7 +145,7 @@ html {
 
   &__text {
     width: 100%;
-    padding-bottom: 30px;
+    padding-bottom: 10px;
     box-shadow: $box-shadow-background-top-primary;
     text-align: center;
   }
@@ -183,11 +183,15 @@ html {
 .paragraph {
   @include font-size-primary;
 
-  padding: 5px 30px;
-  text-align: center;
+  padding: 5px 20px;
+  text-align: left;
 
   &_bold {
     font-weight: 400;
+  }
+
+  &_centered {
+    text-align: center;
   }
 }
 
@@ -312,6 +316,7 @@ html {
 
 .list {
   $item-size: 40px;
+  $item-gap: 35px;
 
   list-style: none;
   padding: 20px;
@@ -326,6 +331,7 @@ html {
 
   &__group {
     margin: 0 20px;
+    margin-top: $item-gap;
   }
 
   &__item {
@@ -337,7 +343,7 @@ html {
     margin: auto;
 
     &:not(:first-child) {
-      margin-top: 40px;
+      margin-top: $item-gap;
     }
   }
 
@@ -348,7 +354,7 @@ html {
     bottom: 0;
     width: $item-size;
     display: inline-flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
     font: {
       family: $font-family-marker;
