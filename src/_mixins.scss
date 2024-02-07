@@ -48,6 +48,11 @@
   line-height: 30px;
 }
 
+@mixin font-size-tooltip {
+  font-size: 10px;
+  line-height: 12px;
+}
+
 @mixin transition-primary($property: 'all') {
   transition: {
     property: #{$property};

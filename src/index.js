@@ -8,6 +8,16 @@ function init(Block, ...args) {
   }
 }
 
+class Utils {
+  static copyText(value) {
+    if (!navigator.clipboard) {
+      return Promise.reject(new Error('weak copy to clipboard support'));
+    }
+
+    return navigator.clipboard.writeText(value);
+  }
+}
+
 class Accordion {
   static block = 'accordion';
 
@@ -357,6 +367,44 @@ class Slider {
   }
 }
 
+class CopyButton {
+  static block = 'copy-button';
+
+  static TOOLTIP_CLASSNAME = 'copy-button__tooltip';
+
+  constructor(rootElem) {
+    this.onClick = this.onClick.bind(this);
+    this.onTooltipAnimationEnd = this.onTooltipAnimationEnd.bind(this);
+
+    this.button = rootElem;
+    this.tooltip = this.button.getElementsByClassName(CopyButton.TOOLTIP_CLASSNAME)[0];
+
+    this.button.addEventListener('click', this.onClick);
+    this.tooltip.addEventListener('animationend', this.onTooltipAnimationEnd);
+  }
+
+  onClick() {
+    Utils.copyText('+79161057526').catch((error) => {
+      console.error('copy to clipboard error', error);
+    });
+
+    this.showTooltip();
+  }
+
+  onTooltipAnimationEnd() {
+    this.hideTooltip();
+  }
+
+  showTooltip() {
+    this.tooltip.style.display = 'block';
+  }
+
+  hideTooltip() {
+    this.tooltip.style.display = null;
+  }
+}
+
 init(Accordion);
 init(ContactButton);
 init(Slider);
+init(CopyButton);

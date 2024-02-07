@@ -201,40 +201,9 @@ html {
   min-height: 70vh;
 }
 
-.buttons-container {
-  padding: 0 20px;
-  text-align: center;
-  max-width: 500px;
-  margin: auto;
-
-  > .button:not(:last-of-type) {
-    margin: 8px auto;
-  }
-
-  &__subtitle {
-    display: inline-block;
-    margin-top: 24px;
-  }
-
-  &__phone {
-    display: inline-block;
-    margin: 10px 0;
-    font: {
-      family: $font-family-primary;
-      weight: $font-weight-action;
-    };
-  }
-
-  &__social {
-    margin: auto;
-    margin-top: 40px;
-    margin-bottom: 10px;
-  }
-}
-
 .button {
   @include font-size-primary;
-  @include transition-primary(#{background-color});
+  @include transition-primary(#{color, background-color});
 
   display: inline-flex;
   justify-content: center;
@@ -279,6 +248,92 @@ html {
   &__icon {
     width: 28px;
     height: 28px;
+  }
+}
+
+.tooltip {
+  @include font-size-tooltip;
+
+  color: $color-background-primary;
+  background-color: $color-text-primary;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.copy-button {
+  position: relative;
+
+  &__tooltip {
+    display: none;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 110%;
+    opacity: 1;
+    animation: ascend 0.5s ease-out;
+  }
+
+  @keyframes ascend {
+    to {
+      bottom: 150%;
+      opacity: 0;
+    }
+  }
+}
+
+.buttons-container {
+  padding: 0 20px;
+  text-align: center;
+  max-width: 500px;
+  margin: auto;
+
+  > .button:not(:last-of-type) {
+    margin: 8px auto;
+  }
+
+  &__subtitle {
+    display: inline-block;
+    margin-top: 24px;
+  }
+
+  &__phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+    font: {
+      family: $font-family-primary;
+      weight: $font-weight-action;
+    };
+  }
+
+  &__copy-button {
+    $button-size: 27px;
+
+    width: $button-size;
+    height: $button-size;
+    padding: 0;
+    color: $color-background-highlight;
+    background-color: $color-text-subtitle;
+
+    &:focus-visible {
+      background-color: darken($color: $color-text-subtitle, $amount: 10);
+    }
+
+    &:hover {
+      color: lighten($color: $color-background-highlight, $amount: 5);
+      background-color: lighten($color: $color-text-subtitle, $amount: 10);
+    }
+
+    &:active {
+      background-color: darken($color: $color-text-subtitle, $amount: 20);
+    }
+  }
+
+  &__social {
+    margin: auto;
+    margin-top: 40px;
+    margin-bottom: 10px;
   }
 }
 
