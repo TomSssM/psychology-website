@@ -404,7 +404,20 @@ class CopyButton {
   }
 }
 
+class Gallery {
+  static block = 'gallery';
+
+  static IMAGE_CLASSNAME = 'gallery__image';
+
+  constructor(rootElem) {
+    this.image = rootElem.getElementsByClassName(Gallery.IMAGE_CLASSNAME)[0];
+
+    this.image.style.backgroundImage = `url(${rootElem.dataset.image})`;
+  }
+}
+
 init(Accordion);
 init(ContactButton);
 init(Slider);
 init(CopyButton);
+init(Gallery);
