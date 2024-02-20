@@ -28,6 +28,12 @@ Run website in development mode:
 npm run dev
 ```
 
+Alternatively you can serve the built website locally:
+
+```bash
+npm run server
+```
+
 ## Deploy
 
 Build the website:
