@@ -362,6 +362,16 @@ html {
   }
 }
 
+.hyperlink {
+  @extend .link;
+
+  color: $color-hyperlink;
+
+  &:hover {
+    color: $color-hyperlink-hover;
+  }
+}
+
 .icon {
   display: inline-block;
   background-repeat: no-repeat;
@@ -438,6 +448,10 @@ html {
       size: $item-size;
     };
   }
+}
+
+.office-address {
+  font-weight: $font-weight-action;
 }
 
 .gallery {
@@ -797,7 +811,7 @@ html {
     }
 
     @media screen and (max-width: 500px) {
-      min-width: 250px;
+      min-width: 230px;
     }
   }
 
