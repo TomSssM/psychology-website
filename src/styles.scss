@@ -941,10 +941,8 @@ html {
 }
 
 .diploma {
-  $diploma-width: 400px;
-
   display: block;
-  max-width: $diploma-width;
+  max-width: 400px;
   overflow: hidden;
   border-radius: $border-radius-m;
   background-color: $color-background-blank;
@@ -953,7 +951,15 @@ html {
 
   &__image {
     display: block;
-    width: $diploma-width;
+    width: 400px;
+  }
+
+  @media screen and (max-width: 400px) {
+    max-width: 350px;
+
+    &__image {
+      width: 350px;
+    }
   }
 }
 
