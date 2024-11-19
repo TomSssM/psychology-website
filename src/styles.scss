@@ -940,6 +940,23 @@ html {
   }
 }
 
+.diploma {
+  $diploma-width: 400px;
+
+  display: block;
+  max-width: $diploma-width;
+  overflow: hidden;
+  border-radius: $border-radius-m;
+  background-color: $color-background-blank;
+  box-shadow: $box-shadow-background-blank;
+  margin: 0 auto;
+
+  &__image {
+    display: block;
+    width: $diploma-width;
+  }
+}
+
 .footer {
   @include font-size-primary;
 
