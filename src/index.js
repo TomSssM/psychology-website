@@ -88,7 +88,17 @@ class Paranja {
 
   static SLIDE_CLASSNAME = 'paranja__slide';
 
-  constructor(rootElem, slider) {
+  static instance = null;
+
+  static getParanja() {
+    if (!this.instance) {
+      this.instance = new Paranja(document.getElementById('js-paranja'));
+    }
+
+    return this.instance;
+  }
+
+  constructor(rootElem) {
     this.onNextButtonClick = this.onNextButtonClick.bind(this);
     this.onPrevButtonClick = this.onPrevButtonClick.bind(this);
     this.onSlideClick = this.onSlideClick.bind(this);
@@ -100,13 +110,11 @@ class Paranja {
     this.prevButton = this.paranja.getElementsByClassName(Paranja.PREV_BUTTON_CLASSNAME)[0];
     this.closeButton = this.paranja.getElementsByClassName(Paranja.CLOSE_BUTTON_CLASSNAME)[0];
     this.slide = this.paranja.getElementsByClassName(Paranja.SLIDE_CLASSNAME)[0];
-    this.slider = slider;
 
     this.nextButton.addEventListener('click', this.onNextButtonClick);
     this.prevButton.addEventListener('click', this.onPrevButtonClick);
     this.slide.addEventListener('click', this.onSlideClick);
     this.closeButton.addEventListener('click', this.onCloseButtonClick);
-    this.slider.addEventListener('slidechange', this.onSlideChange);
   }
 
   set image(image) {
@@ -143,20 +151,32 @@ class Paranja {
     this.image = image;
   }
 
-  show(image) {
+  show(image, slider) {
     if (image) {
       this.image = image;
     }
 
     this.paranja.style.display = 'block';
     this.isShown = true;
+    this.bindToSlider(slider);
     this.dispatchEvent('show');
   }
 
   hide() {
     this.paranja.style.display = null;
     this.isShown = false;
+    this.unbindFromSlider();
     this.dispatchEvent('hide');
+  }
+
+  bindToSlider(slider) {
+    this.slider = slider;
+    this.slider.addEventListener('slidechange', this.onSlideChange);
+  }
+
+  unbindFromSlider() {
+    this.slider.removeEventListener('slidechange', this.onSlideChange);
+    this.slider = null;
   }
 }
 
@@ -192,7 +212,7 @@ class Slider {
     this.slidesCount =  this.getSlides().length;
     this.slideshowEnabled = slideshowEnabled;
     this.intervalId = null;
-    this.paranja = new Paranja(document.getElementById('js-paranja'), this);
+    this.paranja = Paranja.getParanja();
 
     this.slider.addEventListener('click', this.onClick);
     this.sliderView.addEventListener('pointerdown', this.onPointerDown);
@@ -255,7 +275,8 @@ class Slider {
   onSlideClick(slide) {
     const image = slide.dataset.image;
 
-    this.paranja.show(image);
+    this.active = true;
+    this.paranja.show(image, this);
   }
 
   onPointerDown() {
@@ -285,19 +306,32 @@ class Slider {
   }
 
   onParanjaHide() {
+    this.active = false;
     this.startSlideShow();
   }
 
   onParanjaNext() {
+    if (!this.active) {
+      return;
+    }
+
     this.nextSlide();
   }
 
   onParanjaPrev() {
+    if (!this.active) {
+      return;
+    }
+
     this.prevSlide();
   }
 
   addEventListener(eventName, handler) {
     this.slider.addEventListener(eventName, handler);
+  }
+
+  removeEventListener(eventName, handler) {
+    this.slider.removeEventListener(eventName, handler);
   }
 
   dispatchEvent(eventName, detail) {
