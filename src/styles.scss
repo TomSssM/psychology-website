@@ -38,6 +38,10 @@ html {
 .heading {
   @include font-size-heading;
 
+  &_small {
+    @include font-size-heading-small;
+  }
+
   font: {
     family: $font-family-title;
     weight: $font-weight-primary;
@@ -938,6 +942,12 @@ html {
       color: darken($color: $color-text-subtitle, $amount: 30);
     }
   }
+}
+
+.diploma-container {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 18px;
 }
 
 .diploma {
