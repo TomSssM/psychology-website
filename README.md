@@ -6,7 +6,6 @@ Website for psychology business created by __@TomSssM__
 | :--- |
 | [__Deploy__](https://console.cloud.yandex.ru) |
 | [__Domain__](https://www.reg.ru) |
-| [__Analytics__](https://metrika.yandex.ru/list) |
 
 ## Quick Start
 
