@@ -2,9 +2,9 @@
 
 Website for psychology business created by __@TomSssM__
 
-| [ekaterinakortasova.moscow](https://ekaterinakortasova.moscow) |
+| [ekaterinael.moscow](https://ekaterinael.moscow) |
 | :--- |
-| [__Deploy__](https://console.cloud.yandex.ru/cloud/b1g5vtoan3r3okhe2ag1) |
+| [__Deploy__](https://console.cloud.yandex.ru) |
 | [__Domain__](https://www.reg.ru) |
 | [__Analytics__](https://metrika.yandex.ru/list) |
 
