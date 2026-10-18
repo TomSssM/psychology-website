@@ -81,3 +81,11 @@
     size: cover;
   }
 }
+
+@mixin background-image-top() {
+  background: {
+    repeat: no-repeat;
+    position: top;
+    size: cover;
+  }
+}
